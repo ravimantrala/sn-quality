@@ -1,112 +1,252 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { SnClient } from "../sn-client.js";
-import { execSync } from "node:child_process";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { join } from "node:path";
 
-interface TestResult {
-  contract: string;
-  scenario: string;
-  status: "passed" | "failed" | "skipped";
-  error?: string;
-  duration: number;
+interface GherkinStep {
+  keyword: string;
+  text: string;
 }
 
-interface ExecutionResult {
-  total: number;
-  passed: number;
-  failed: number;
-  skipped: number;
-  pass_rate: string;
-  results: TestResult[];
-  raw_output: string;
+interface GherkinScenario {
+  name: string;
+  tags: string[];
+  steps: GherkinStep[];
+}
+
+interface GherkinFeature {
+  name: string;
+  file: string;
+  scenarios: GherkinScenario[];
+}
+
+interface PlaywrightInstruction {
+  action: string;
+  description: string;
+  params: Record<string, string>;
+}
+
+interface ScenarioExecution {
+  feature: string;
+  scenario: string;
+  tags: string[];
+  instructions: PlaywrightInstruction[];
+}
+
+function parseGherkin(content: string, fileName: string): GherkinFeature {
+  const lines = content.split("\n").map((l) => l.trim()).filter((l) => l && !l.startsWith("#"));
+  const feature: GherkinFeature = { name: "", file: fileName, scenarios: [] };
+  let currentScenario: GherkinScenario | null = null;
+  let currentTags: string[] = [];
+
+  for (const line of lines) {
+    if (line.startsWith("@")) {
+      currentTags = line.split(/\s+/).filter((t) => t.startsWith("@"));
+    } else if (line.startsWith("Feature:")) {
+      feature.name = line.replace("Feature:", "").trim();
+    } else if (line.startsWith("Scenario:")) {
+      currentScenario = {
+        name: line.replace("Scenario:", "").trim(),
+        tags: [...currentTags],
+        steps: [],
+      };
+      currentTags = [];
+      feature.scenarios.push(currentScenario);
+    } else if (/^(Given|When|Then|And|But)\s/.test(line)) {
+      const match = line.match(/^(Given|When|Then|And|But)\s+(.*)/);
+      if (match && currentScenario) {
+        currentScenario.steps.push({ keyword: match[1], text: match[2] });
+      }
+    }
+  }
+
+  return feature;
+}
+
+function stepToInstruction(step: GherkinStep): PlaywrightInstruction {
+  const text = step.text;
+
+  // Login
+  const loginMatch = text.match(/I am logged in as "([^"]+)"/);
+  if (loginMatch) {
+    return {
+      action: "browser_navigate",
+      description: `Login to ServiceNow as ${loginMatch[1]}`,
+      params: { role: loginMatch[1], step: "login" },
+    };
+  }
+
+  // Create new record
+  const createMatch = text.match(/I create a new (\w+)/);
+  if (createMatch) {
+    return {
+      action: "browser_navigate",
+      description: `Navigate to new ${createMatch[1]} form`,
+      params: { table: createMatch[1].toLowerCase(), step: "navigate_new" },
+    };
+  }
+
+  // Set field
+  const setMatch = text.match(/I set "([^"]+)" to "([^"]+)"/);
+  if (setMatch) {
+    return {
+      action: "browser_type",
+      description: `Set field "${setMatch[1]}" to "${setMatch[2]}"`,
+      params: { field: setMatch[1], value: setMatch[2], step: "set_field" },
+    };
+  }
+
+  // Submit
+  if (text.match(/I submit the form/)) {
+    return {
+      action: "browser_click",
+      description: "Submit the form",
+      params: { step: "submit" },
+    };
+  }
+
+  // Assert field displays value
+  const displayMatch = text.match(/the field "([^"]+)" should display "([^"]+)"/);
+  if (displayMatch) {
+    return {
+      action: "browser_snapshot",
+      description: `Assert field "${displayMatch[1]}" displays "${displayMatch[2]}"`,
+      params: { field: displayMatch[1], expected: displayMatch[2], step: "assert_field_value" },
+    };
+  }
+
+  // Assert field visible
+  const visibleMatch = text.match(/the field "([^"]+)" should be visible/);
+  if (visibleMatch) {
+    return {
+      action: "browser_snapshot",
+      description: `Assert field "${visibleMatch[1]}" is visible`,
+      params: { field: visibleMatch[1], step: "assert_field_visible" },
+    };
+  }
+
+  // Assert field not editable
+  const readonlyMatch = text.match(/the field "([^"]+)" should not be editable/);
+  if (readonlyMatch) {
+    return {
+      action: "browser_snapshot",
+      description: `Assert field "${readonlyMatch[1]}" is read-only`,
+      params: { field: readonlyMatch[1], step: "assert_field_readonly" },
+    };
+  }
+
+  // Navigate to list
+  const listMatch = text.match(/I navigate to the (\w+) list/);
+  if (listMatch) {
+    return {
+      action: "browser_navigate",
+      description: `Navigate to ${listMatch[1]} list view`,
+      params: { table: listMatch[1].toLowerCase(), step: "navigate_list" },
+    };
+  }
+
+  // Assert rows match
+  const rowsMatch = text.match(/I should only see .* where "([^"]+)" is "([^"]+)"/);
+  if (rowsMatch) {
+    return {
+      action: "browser_snapshot",
+      description: `Assert all list rows have "${rowsMatch[1]}" = "${rowsMatch[2]}"`,
+      params: { field: rowsMatch[1], expected: rowsMatch[2], step: "assert_list_filter" },
+    };
+  }
+
+  // Open existing record
+  const openMatch = text.match(/I open an existing (\w+)/);
+  if (openMatch) {
+    return {
+      action: "browser_navigate",
+      description: `Open an existing ${openMatch[1]} record`,
+      params: { table: openMatch[1].toLowerCase(), step: "navigate_existing" },
+    };
+  }
+
+  // Fallback
+  return {
+    action: "manual",
+    description: `Manual step: ${step.keyword} ${text}`,
+    params: { raw: `${step.keyword} ${text}`, step: "manual" },
+  };
 }
 
 export function registerExecuteTool(server: McpServer, _snClient: SnClient) {
   server.tool(
     "sn_quality_execute",
-    "Execute Playwright tests for all quality contracts against the live ServiceNow instance. Runs 'npx playwright test' and returns structured results with pass/fail per scenario.",
+    "Parse Gherkin quality contracts and return structured Playwright MCP instructions for each scenario. Claude Code should then execute these instructions using Playwright MCP tools (browser_navigate, browser_click, browser_type, browser_snapshot) against the live ServiceNow instance, collecting pass/fail results as it goes.",
     {
-      filter: z.string().optional().describe("Filter to run specific test files (glob pattern, e.g. 'tests/incident-routing*')"),
-      headed: z.boolean().optional().describe("Run in headed mode (visible browser). Default: false (headless)"),
+      directory: z.string().optional().describe("Directory containing .feature files (default: 'contracts')"),
+      contract: z.string().optional().describe("Specific contract name to execute (without .feature extension)"),
     },
-    async ({ filter, headed }) => {
-      const testDir = filter || "tests/";
-      const headedFlag = headed ? "--headed" : "";
+    async ({ directory, contract }) => {
+      const dir = directory || "contracts";
 
-      let rawOutput = "";
-      let exitCode = 0;
-
-      try {
-        rawOutput = execSync(
-          `npx playwright test ${testDir} ${headedFlag} --reporter=json`,
-          {
-            encoding: "utf-8",
-            timeout: 300000,
-            env: {
-              ...process.env,
-              PLAYWRIGHT_JSON_OUTPUT_FILE: "test-results/results.json",
-            },
-          }
-        );
-      } catch (err: unknown) {
-        const execErr = err as { status?: number; stdout?: string; message?: string };
-        exitCode = execErr.status ?? 1;
-        rawOutput = execErr.stdout ?? execErr.message ?? "Unknown error";
+      if (!existsSync(dir)) {
+        return {
+          content: [{ type: "text" as const, text: `No contracts directory found at '${dir}'. Run sn_quality_generate_contracts first.` }],
+        };
       }
 
-      const resultsFile = "test-results/results.json";
-      const results: TestResult[] = [];
-      let total = 0;
-      let passed = 0;
-      let failed = 0;
-      const skipped = 0;
-
-      if (existsSync(resultsFile)) {
-        const jsonData = JSON.parse(readFileSync(resultsFile, "utf-8"));
-
-        for (const suite of jsonData.suites || []) {
-          const contractName = suite.title || "unknown";
-          for (const spec of suite.specs || []) {
-            const status = spec.ok ? "passed" : "failed";
-            if (status === "passed") passed++;
-            else failed++;
-            total++;
-
-            const testResult: TestResult = {
-              contract: contractName,
-              scenario: spec.title,
-              status,
-              duration: spec.tests?.[0]?.results?.[0]?.duration ?? 0,
-            };
-
-            if (!spec.ok) {
-              testResult.error =
-                spec.tests?.[0]?.results?.[0]?.error?.message ?? "Unknown error";
-            }
-
-            results.push(testResult);
-          }
+      let files = readdirSync(dir).filter((f) => f.endsWith(".feature"));
+      if (contract) {
+        files = files.filter((f) => f === `${contract}.feature`);
+        if (files.length === 0) {
+          return {
+            content: [{ type: "text" as const, text: `Contract '${contract}' not found in ${dir}/` }],
+          };
         }
       }
 
-      const executionResult: ExecutionResult = {
-        total,
-        passed,
-        failed,
-        skipped,
-        pass_rate: total > 0 ? `${Math.round((passed / total) * 100)}%` : "N/A",
-        results,
-        raw_output: rawOutput.substring(0, 5000),
-      };
+      const executions: ScenarioExecution[] = [];
 
-      const statusLabel = failed === 0 ? "PASSED" : "BLOCKED";
+      for (const file of files) {
+        const content = readFileSync(join(dir, file), "utf-8");
+        const feature = parseGherkin(content, file);
+
+        for (const scenario of feature.scenarios) {
+          const instructions = scenario.steps.map(stepToInstruction);
+          executions.push({
+            feature: feature.name,
+            scenario: scenario.name,
+            tags: scenario.tags,
+            instructions,
+          });
+        }
+      }
+
+      const instance = process.env.SN_INSTANCE || "https://your-instance.service-now.com";
+
+      let output = `## Contract Execution Plan\n\n`;
+      output += `**Instance:** ${instance}\n`;
+      output += `**Contracts:** ${files.length} files, ${executions.length} scenarios\n\n`;
+      output += `Execute each scenario below using Playwright MCP tools against the live instance.\n`;
+      output += `After each scenario, record PASS or FAIL.\n\n`;
+
+      for (const exec of executions) {
+        output += `### ${exec.feature} > ${exec.scenario}\n`;
+        output += `Tags: ${exec.tags.join(", ") || "none"}\n\n`;
+
+        for (let i = 0; i < exec.instructions.length; i++) {
+          const inst = exec.instructions[i];
+          output += `${i + 1}. **${inst.action}** — ${inst.description}\n`;
+          if (Object.keys(inst.params).length > 1) {
+            output += `   Params: ${JSON.stringify(inst.params)}\n`;
+          }
+        }
+        output += `\n`;
+      }
+
+      output += `---\n\nAfter executing all scenarios, call sn_quality_summary to generate the quality report.\n`;
 
       return {
         content: [
           {
             type: "text" as const,
-            text: `Quality Gate: ${statusLabel}\n\nResults: ${passed}/${total} passed (${executionResult.pass_rate})\n\n${JSON.stringify(executionResult, null, 2)}`,
+            text: output,
           },
         ],
       };
