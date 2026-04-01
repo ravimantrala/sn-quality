@@ -1,8 +1,8 @@
-# sn-quality — ServiceNow Quality MCP Server
+# sn-quality — ServiceNow Quality Testing
 
 ## Project Overview
 
-Contract-driven quality testing for ServiceNow apps. This project provides both an MCP server and Claude Code skills for discovering instance metadata, generating Gherkin test contracts, deploying artifacts, executing tests, and diagnosing failures.
+Contract-driven quality testing for ServiceNow apps. Claude Code skills for discovering instance metadata, generating Gherkin test contracts, deploying artifacts, executing tests, and diagnosing failures.
 
 ## Available Skills
 
@@ -66,9 +66,8 @@ Instance credentials are stored in `.env` (gitignored). The CLI runner loads the
 
 ## Project Structure
 
-- `src/` — TypeScript source (MCP server + CLI runner)
-- `src/tools/` — Individual MCP tool implementations
-- `src/run.ts` — CLI runner for skills (bypasses MCP)
+- `src/sn-client.ts` — ServiceNow REST API client
+- `src/run.ts` — CLI runner for skills
 - `.claude/skills/` — Claude Code skill definitions
 - `contracts/` — Generated Gherkin .feature files
 - `tests/` — Smoke tests

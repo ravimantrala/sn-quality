@@ -1,16 +1,11 @@
 {
   "name": "sn-quality",
   "version": "0.1.0",
-  "description": "ServiceNow Quality MCP Server — contract-driven testing from Claude Code",
+  "description": "ServiceNow contract-driven quality testing from Claude Code",
   "type": "module",
-  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "tsc --watch"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.12.1"
+    "smoke": "tsx tests/smoke.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
