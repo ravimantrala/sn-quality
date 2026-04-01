@@ -63,12 +63,32 @@ interface RecordRegistry {
 }
 
 // ---------------------------------------------------------------------------
+// Types — deploy-snapshot.json
+// ---------------------------------------------------------------------------
+
+interface DeploySnapshotEntry {
+  table: string;
+  sys_id: string;
+  name: string;
+  type: string;
+  action: "created" | "updated";
+  original_values?: Record<string, string>;
+  deployed_at: string;
+}
+
+interface DeploySnapshot {
+  entries: DeploySnapshotEntry[];
+  created_at: string;
+}
+
+// ---------------------------------------------------------------------------
 // Paths
 // ---------------------------------------------------------------------------
 
 const RESULTS_DIR = join(process.cwd(), "test-results");
 const RESULTS_PATH = join(RESULTS_DIR, "results.json");
 const RECORDS_PATH = join(RESULTS_DIR, "records.json");
+const SNAPSHOT_PATH = join(RESULTS_DIR, "deploy-snapshot.json");
 
 function ensureResultsDir(): void {
   if (!existsSync(RESULTS_DIR)) {
@@ -102,6 +122,28 @@ function saveResults(manifest: ResultsManifest): void {
 function saveRecords(registry: RecordRegistry): void {
   ensureResultsDir();
   writeFileSync(RECORDS_PATH, JSON.stringify(registry, null, 2));
+}
+
+function loadSnapshot(): DeploySnapshot {
+  if (!existsSync(SNAPSHOT_PATH)) {
+    return { entries: [], created_at: new Date().toISOString() };
+  }
+  return JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8")) as DeploySnapshot;
+}
+
+function saveSnapshot(snapshot: DeploySnapshot): void {
+  ensureResultsDir();
+  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2));
+}
+
+function appendSnapshotEntry(entry: DeploySnapshotEntry): void {
+  const snapshot = loadSnapshot();
+  snapshot.entries.push(entry);
+  saveSnapshot(snapshot);
+}
+
+function clearSnapshot(): void {
+  saveSnapshot({ entries: [], created_at: new Date().toISOString() });
 }
 
 // ---------------------------------------------------------------------------
@@ -242,15 +284,21 @@ function getSummaryStats(): SummaryStats {
 
 export {
   appendResult,
+  appendSnapshotEntry,
   clearRecords,
   clearResults,
+  clearSnapshot,
   getAllTrackedRecords,
   getSummaryStats,
   loadRecords,
   loadResults,
+  loadSnapshot,
   saveRecords,
   saveResults,
+  saveSnapshot,
   trackRecord,
+  DeploySnapshotEntry,
+  DeploySnapshot,
   TrackedRecord,
   SummaryStats,
 };

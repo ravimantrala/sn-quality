@@ -12,16 +12,20 @@
  *   npx tsx src/run.ts summary '{"table":"incident"}'
  *   npx tsx src/run.ts report '{"action":"append","contract":"...","scenario":"...","passed":true}'
  *   npx tsx src/run.ts record '{"action":"track","table":"incident","sys_id":"abc","purpose":"test_data"}'
+ *   npx tsx src/run.ts rollback '{}'
  */
 
 import "dotenv/config";
 import { createSnClient } from "./sn-client.js";
 import {
   appendResult,
+  appendSnapshotEntry,
   clearRecords,
   clearResults,
+  clearSnapshot,
   getAllTrackedRecords,
   getSummaryStats,
+  loadSnapshot,
   trackRecord,
 } from "./results-writer.js";
 
@@ -100,10 +104,29 @@ async function run() {
         if (!targetTable) { results.push({ name: art.name, type: art.type, action: "error", detail: "unknown type" }); continue; }
         const existing = await sn().query({ table: targetTable, query: `name=${art.name}^collection=${art.table}`, fields: ["sys_id"], limit: 1 });
         if (existing.length > 0) {
+          // Snapshot: capture full record state before overwriting
+          const original = await sn().getRecord(targetTable, existing[0].sys_id);
           const rec = await sn().update(targetTable, existing[0].sys_id, art.config);
+          appendSnapshotEntry({
+            table: targetTable,
+            sys_id: rec.sys_id,
+            name: art.name,
+            type: art.type,
+            action: "updated",
+            original_values: original,
+            deployed_at: new Date().toISOString(),
+          });
           results.push({ name: art.name, type: art.type, action: "updated", sys_id: rec.sys_id });
         } else {
           const rec = await sn().insert(targetTable, { name: art.name, collection: art.table, ...art.config });
+          appendSnapshotEntry({
+            table: targetTable,
+            sys_id: rec.sys_id,
+            name: art.name,
+            type: art.type,
+            action: "created",
+            deployed_at: new Date().toISOString(),
+          });
           results.push({ name: art.name, type: art.type, action: "created", sys_id: rec.sys_id });
         }
       }
@@ -112,6 +135,15 @@ async function run() {
     }
 
     case "cleanup": {
+      // Child records to cascade-delete before the parent
+      const CHILD_TABLES: Record<string, Array<{ table: string; fk: string }>> = {
+        incident: [
+          { table: "task_sla", fk: "task" },
+          { table: "sys_email", fk: "instance" },
+          { table: "sys_journal_field", fk: "element_id" },
+        ],
+      };
+
       // Use explicit records if provided, otherwise read from records.json
       let records = args.records;
       if (!records || records.length === 0) {
@@ -127,8 +159,24 @@ async function run() {
       const results = [];
       for (const rec of records) {
         try {
+          // Cascade: delete child records first
+          const children = CHILD_TABLES[rec.table] || [];
+          let childrenDeleted = 0;
+          for (const child of children) {
+            const childRecs = await sn().query({
+              table: child.table,
+              query: `${child.fk}=${rec.sys_id}`,
+              fields: ["sys_id"],
+              limit: 50,
+            });
+            for (const cr of childRecs) {
+              await sn().deleteRecord(child.table, cr.sys_id);
+              childrenDeleted++;
+            }
+          }
+          // Then delete the parent
           await sn().deleteRecord(rec.table, rec.sys_id);
-          results.push({ ...rec, status: "deleted" });
+          results.push({ ...rec, status: "deleted", children_deleted: childrenDeleted });
         } catch (e: unknown) {
           results.push({ ...rec, status: `error: ${e instanceof Error ? e.message : e}` });
         }
@@ -245,6 +293,63 @@ async function run() {
           console.error(`Unknown record action: ${args.action}. Use track, list, or clear.`);
           process.exit(1);
       }
+      break;
+    }
+
+    // -----------------------------------------------------------------
+    // Rollback — reverse the last deploy
+    // -----------------------------------------------------------------
+
+    case "rollback": {
+      const snapshot = loadSnapshot();
+      if (snapshot.entries.length === 0) {
+        console.log(JSON.stringify({ message: "No deploy snapshot found. Nothing to roll back.", rolled_back: 0 }));
+        break;
+      }
+
+      if (args.dry_run) {
+        console.log(JSON.stringify({
+          message: "Dry run — no changes made",
+          entries: snapshot.entries.map((e) => ({
+            name: e.name,
+            type: e.type,
+            action: e.action === "created" ? "would delete" : "would restore",
+            sys_id: e.sys_id,
+          })),
+        }, null, 2));
+        break;
+      }
+
+      const rollbackResults = [];
+      // Process in reverse order (LIFO)
+      for (const entry of [...snapshot.entries].reverse()) {
+        try {
+          if (entry.action === "created") {
+            await sn().deleteRecord(entry.table, entry.sys_id);
+            rollbackResults.push({ name: entry.name, type: entry.type, action: "deleted", sys_id: entry.sys_id });
+          } else if (entry.action === "updated" && entry.original_values) {
+            // Strip sys_ metadata fields that SN won't accept on update
+            const restoreFields: Record<string, string> = {};
+            for (const [key, val] of Object.entries(entry.original_values)) {
+              if (!key.startsWith("sys_")) {
+                restoreFields[key] = val;
+              }
+            }
+            await sn().update(entry.table, entry.sys_id, restoreFields);
+            rollbackResults.push({ name: entry.name, type: entry.type, action: "restored", sys_id: entry.sys_id });
+          }
+        } catch (e: unknown) {
+          rollbackResults.push({
+            name: entry.name,
+            type: entry.type,
+            action: "error",
+            detail: e instanceof Error ? e.message : String(e),
+          });
+        }
+      }
+
+      clearSnapshot();
+      console.log(JSON.stringify(rollbackResults, null, 2));
       break;
     }
 

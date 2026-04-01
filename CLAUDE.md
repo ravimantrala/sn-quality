@@ -19,7 +19,8 @@ These skills are available as slash commands when working in this project:
 | `/sn-deploy` | Push artifacts to the instance (business rules, UI policies, etc.) |
 | `/sn-execute` | Parse contracts into a Playwright execution plan |
 | `/sn-diagnose` | Analyze a test failure using instance metadata |
-| `/sn-cleanup` | Delete test records from the instance |
+| `/sn-cleanup` | Delete test records from the instance (cascade-aware) |
+| `/sn-rollback` | Roll back the last deploy to original state |
 | `/sn-summary` | Generate a quality coverage report |
 
 ## End-to-End Workflow
@@ -36,7 +37,7 @@ Based on the user's intent and the discovered metadata, run `/sn-generate-contra
 Run `/sn-review-contracts` and present the contracts to the user. Wait for their approval. If they want changes, use `/sn-edit-contract`.
 
 ### 4. Deploy
-Use `/sn-deploy` to push the app artifacts (business rules, UI policies, client scripts, etc.) to the ServiceNow instance. Save all returned sys_ids for potential cleanup.
+Use `/sn-deploy` to push the app artifacts (business rules, UI policies, client scripts, etc.) to the ServiceNow instance. Deploy automatically snapshots the pre-deploy state to `test-results/deploy-snapshot.json` for rollback.
 
 ### 5. Execute
 Run `/sn-execute` to parse the contracts into a Playwright execution plan. If Playwright MCP tools are available, execute the plan against the live instance. Record PASS/FAIL for each scenario.
@@ -48,7 +49,7 @@ If any tests fail, run `/sn-diagnose` with the table, error message, and scenari
 Run `/sn-summary` to generate the quality report — contract count, coverage %, pass rate, and quality gate status.
 
 ### 8. Cleanup (if needed)
-Run `/sn-cleanup` to remove any test records or artifacts that should not persist on the instance.
+Run `/sn-cleanup` to remove test records (cascade-deletes child SLAs, emails, journal entries). Run `/sn-rollback` to reverse deployed artifacts to their original state.
 
 ## CLI Runner
 
@@ -58,7 +59,7 @@ All API skills use `src/run.ts` as the CLI entry point:
 npx tsx src/run.ts <command> '<json-args>'
 ```
 
-Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`, `report`, `record`
+Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`, `report`, `record`, `rollback`
 
 ## Credentials
 
@@ -73,5 +74,6 @@ Instance credentials are stored in `.env` (gitignored). The CLI runner loads the
 - `contracts/` — Generated Gherkin .feature files
 - `test-results/results.json` — Structured test results (Playwright-compatible format for CI)
 - `test-results/records.json` — Registry of sys_ids created during testing (for cleanup)
+- `test-results/deploy-snapshot.json` — Pre-deploy state snapshot (for rollback)
 - `tests/` — Smoke tests
 - `.github/workflows/` — CI/CD quality gate
