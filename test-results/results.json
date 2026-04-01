@@ -1,0 +1,326 @@
+{
+  "suites": [
+    {
+      "title": "incident-priority-matrix",
+      "specs": [
+        {
+          "title": "Impact 1-High / Urgency 1-High = 1-Critical",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 1-High / Urgency 2-Medium = 2-High",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 1-High / Urgency 3-Low = 3-Moderate",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 2-Medium / Urgency 1-High = 2-High",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 2-Medium / Urgency 2-Medium = 3-Moderate",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 2-Medium / Urgency 3-Low = 4-Low",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 3-Low / Urgency 1-High = 3-Moderate",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 3-Low / Urgency 2-Medium = 4-Low",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Impact 3-Low / Urgency 3-Low = 5-Planning",
+          "ok": true,
+          "tags": [
+            "@Matrix",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incident-p1-lifecycle",
+      "specs": [
+        {
+          "title": "Create a P1 incident with required fields and validate priority engine",
+          "ok": true,
+          "tags": [
+            "@Creation",
+            "@Smoke"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Priority field cannot be manually overridden",
+          "ok": true,
+          "tags": [
+            "@UIPolicy",
+            "@Priority"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Assigning the incident moves state to In Progress",
+          "ok": true,
+          "tags": [
+            "@Assignment",
+            "@StateTransition"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "SLA response and resolution timers are active",
+          "ok": true,
+          "tags": [
+            "@SLA",
+            "@Timer"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Stakeholders are notified when P1 incident is created",
+          "ok": true,
+          "tags": [
+            "@Notification"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incident-priority-recalculation",
+      "specs": [
+        {
+          "title": "Priority upgrades when urgency is raised on existing incident",
+          "ok": true,
+          "tags": [
+            "@Escalation"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Priority upgrades when impact is raised on existing incident",
+          "ok": true,
+          "tags": [
+            "@Escalation"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Priority jumps to Critical when both impact and urgency are raised",
+          "ok": true,
+          "tags": [
+            "@Escalation",
+            "@Critical"
+          ],
+          "tests": [
+            {
+              "results": [
+                {
+                  "status": "passed",
+                  "duration": 0
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "startTime": "2026-04-01T06:39:55.163Z",
+    "endTime": "2026-04-01T06:41:22.629Z"
+  }
+}

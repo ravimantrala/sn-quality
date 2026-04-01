@@ -58,7 +58,7 @@ All API skills use `src/run.ts` as the CLI entry point:
 npx tsx src/run.ts <command> '<json-args>'
 ```
 
-Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`
+Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`, `report`, `record`
 
 ## Credentials
 
@@ -67,8 +67,11 @@ Instance credentials are stored in `.env` (gitignored). The CLI runner loads the
 ## Project Structure
 
 - `src/sn-client.ts` — ServiceNow REST API client
+- `src/results-writer.ts` — Test results and record registry persistence
 - `src/run.ts` — CLI runner for skills
 - `.claude/skills/` — Claude Code skill definitions
 - `contracts/` — Generated Gherkin .feature files
+- `test-results/results.json` — Structured test results (Playwright-compatible format for CI)
+- `test-results/records.json` — Registry of sys_ids created during testing (for cleanup)
 - `tests/` — Smoke tests
 - `.github/workflows/` — CI/CD quality gate
