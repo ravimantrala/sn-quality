@@ -1,20 +1,26 @@
 ---
 name: sn-generate-contracts
-description: Generate rich Gherkin quality contracts (.feature files) from developer intent and instance metadata. Use when the user wants to create test contracts for their ServiceNow app.
+description: Generate paired Gherkin test contracts (.feature) and build specs (.build.md) from an approved plan. Every feature file gets a build spec. Use when the user wants to create test contracts for their ServiceNow app.
 ---
 
 # SN Generate Contracts
 
-Write production-quality Gherkin .feature files to the contracts/ directory based on developer intent and instance metadata.
+Generate **paired** files from an approved `/sn-plan` output:
+- `.feature` — Gherkin test contract (what to test, for Playwright)
+- `.build.md` — Build spec (what to create, for Build Agent)
+
+These are always 1:1. Every `.feature` MUST have a `.build.md`. They come from the same plan.
 
 ## Workflow
 
-1. If instance metadata isn't already available, run `/sn-discover` first to understand what artifacts exist (business rules, UI policies, ACLs, notifications, SLAs)
-2. Ask the user what behavior they want to test (or infer from context)
-3. Generate rich, end-to-end Gherkin contracts following the style guide below
-4. Write the .feature file(s) to the `contracts/` directory using the Write tool:
-   - Path: `C:/Users/ravi.mantrala/documents/claude_builds/sn-quality/contracts/<name>.feature`
-   - Use kebab-case for filenames (e.g. `incident-p1-lifecycle.feature`)
+1. **Require an approved plan.** Do NOT generate contracts without a plan from `/sn-plan`. The plan's Behaviors become Gherkin scenarios. The plan's Decision Matrix becomes Scenario Outlines. The plan's Assumptions become background context.
+2. If instance metadata isn't already available, run `/sn-discover` first
+3. Generate the `.feature` file following the Gherkin Style Guide below
+4. Generate the paired `.build.md` file following the Build Spec Format below
+5. Write both files to the `contracts/` directory:
+   - `contracts/<name>.feature` — Gherkin test contract
+   - `contracts/<name>.build.md` — Build spec for Build Agent
+   - Use kebab-case for filenames (e.g. `incident-auto-priority.feature` + `incident-auto-priority.build.md`)
 
 ## Gherkin Style Guide — ALWAYS follow this
 
@@ -351,6 +357,130 @@ Feature: Priority Recalculates When Impact or Urgency Changes
     And an SLA record is attached with definition "Priority 1 resolution (1 hour)"
 ```
 
+## Build Spec Format — ALWAYS generate alongside the .feature file
+
+For every `.feature` file, generate a paired `.build.md` with the same name. The build spec tells Build Agent what artifacts to create on the instance.
+
+### Build Spec Structure
+
+```markdown
+---
+name: <matching the .feature filename>
+plan: <plan title from /sn-plan>
+table: <primary table or scope>
+---
+
+# Build Spec: <title>
+
+## Artifacts to Create
+
+### 1. <Type>: <Name>
+- **Table:** <ServiceNow table to create the record on>
+- **Type:** <business_rule | ui_policy | client_script | catalog_item | variable | flow | etc.>
+- **Trigger:** <when this fires — before insert, after update, on load, etc.>
+- **Condition:** <when it applies>
+- **Behavior:** <what it does — reference specific plan behaviors by number>
+- **Fields:**
+  | Field | Value |
+  |-------|-------|
+  | ... | ... |
+- **Logic:** <decision tables, script pseudocode, or plain English logic>
+
+### 2. <next artifact>
+...
+
+## Dependencies
+<ordering constraints between artifacts, references to existing instance artifacts>
+
+## Acceptance Criteria
+| Artifact | Validates | Contract Scenario |
+|----------|-----------|-------------------|
+| <name> | <what it proves> | <scenario from .feature> |
+
+## Rollback
+- <artifact>: delete (created) or restore (updated)
+```
+
+### Key Rules for Build Specs
+- Every artifact in the build spec MUST map to at least one scenario in the `.feature` file
+- Every scenario in the `.feature` file MUST be validated by at least one artifact in the build spec
+- The Acceptance Criteria table makes this mapping explicit
+- Include enough detail for Build Agent to generate the actual ServiceNow code (Fluent/SDK)
+- Include the logic/decision matrix — don't just say "calculate priority", show the matrix
+- Dependencies section tells Build Agent the creation order
+- Rollback section tells `/sn-rollback` what to undo
+
+### Build Spec Example (paired with incident-auto-priority.feature)
+
+```markdown
+---
+name: incident-auto-priority
+plan: Incident Auto-Priority Assignment
+table: incident
+---
+
+# Build Spec: Incident Auto-Priority Assignment
+
+## Artifacts to Create
+
+### 1. Business Rule: Auto Priority from Impact Urgency
+- **Table:** sys_script (creates on: incident)
+- **Type:** business_rule
+- **Trigger:** before insert, before update
+- **Condition:** impact changes OR urgency changes
+- **Behavior:** Calculates priority from 3x3 impact/urgency matrix (Plan behaviors 1, 2)
+- **Fields:**
+  | Field | Value |
+  |-------|-------|
+  | name | Auto Priority from Impact Urgency |
+  | collection | incident |
+  | when | before |
+  | order | 50 |
+  | active | true |
+- **Logic:**
+  | Impact | Urgency | → Priority |
+  |--------|---------|-----------|
+  | 1 | 1 | 1 (Critical) |
+  | 1 | 2 | 2 (High) |
+  | 1 | 3 | 3 (Moderate) |
+  | 2 | 1 | 2 (High) |
+  | 2 | 2 | 3 (Moderate) |
+  | 2 | 3 | 4 (Low) |
+  | 3 | 1 | 3 (Moderate) |
+  | 3 | 2 | 4 (Low) |
+  | 3 | 3 | 5 (Planning) |
+
+### 2. UI Policy: Priority Read-Only
+- **Table:** sys_ui_policy (applies to: incident)
+- **Type:** ui_policy
+- **Trigger:** on form load
+- **Condition:** always
+- **Behavior:** Makes Priority field read-only (Plan behavior 3)
+- **Actions:**
+  | Field | Read-Only | Visible | Mandatory |
+  |-------|-----------|---------|-----------|
+  | priority | true | true | false |
+
+## Dependencies
+- No dependencies between artifacts
+- Existing P1-P5 SLA definitions will auto-attach based on priority
+
+## Acceptance Criteria
+| Artifact | Validates | Contract Scenario |
+|----------|-----------|-------------------|
+| Business Rule | Priority auto-calculated | Priority matrix (9 outline examples) |
+| Business Rule | Recalculates on change | Urgency/impact escalation (3 scenarios) |
+| UI Policy | Field is read-only | P1 creation — priority is "1 - Critical" |
+
+## Rollback
+- Business Rule "Auto Priority from Impact Urgency": delete (new)
+- UI Policy "Priority Read-Only": delete (new)
+```
+
 ## Output
 
-Confirm which files were written and suggest running `/sn-review-contracts` to inspect them.
+Confirm which paired files were written:
+- `contracts/<name>.feature` — test contract
+- `contracts/<name>.build.md` — build spec
+
+Suggest running `/sn-review-contracts` to inspect them.
