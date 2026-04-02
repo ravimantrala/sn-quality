@@ -2,12 +2,15 @@
   "name": "sn-quality",
   "version": "0.1.0",
   "description": "ServiceNow contract-driven quality testing from Claude Code",
-  "type": "module",
   "scripts": {
     "build": "tsc",
-    "smoke": "tsx tests/smoke.ts"
+    "smoke": "tsx tests/smoke.ts",
+    "codegen": "tsx src/codegen.ts",
+    "test": "node node_modules/@playwright/test/cli.js test",
+    "test:list": "node node_modules/@playwright/test/cli.js test --list"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.0",
     "@types/node": "^22.0.0",
     "dotenv": "^17.3.1",
     "tsx": "^4.21.0",

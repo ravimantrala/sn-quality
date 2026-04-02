@@ -10,6 +10,7 @@ These skills are available as slash commands when working in this project:
 
 | Skill | Purpose |
 |-------|---------|
+| `/sn-plan` | Adaptive planning from intent — produces structured plan before contracts |
 | `/sn-query` | Query any ServiceNow table |
 | `/sn-check-exists` | Verify an artifact exists on the instance |
 | `/sn-discover` | Scan instance metadata (business rules, UI policies, ACLs, notifications, SLAs) |
@@ -19,36 +20,49 @@ These skills are available as slash commands when working in this project:
 | `/sn-deploy` | Push artifacts to the instance (business rules, UI policies, etc.) |
 | `/sn-execute` | Parse contracts into a Playwright execution plan |
 | `/sn-diagnose` | Analyze a test failure using instance metadata |
-| `/sn-cleanup` | Delete test records from the instance |
+| `/sn-cleanup` | Delete test records from the instance (cascade-aware) |
+| `/sn-rollback` | Roll back the last deploy to original state |
 | `/sn-summary` | Generate a quality coverage report |
+
+## Critical Rules
+
+- **NEVER run `/sn-generate-contracts` without an approved plan from `/sn-plan` first.** The plan is the source of truth — contracts are a mechanical translation of the plan, not an interpretation of raw intent.
+- **NEVER deploy without running tests first (RED phase).** The TDD loop requires seeing tests fail before writing code.
+- When a user describes what they want to build, ALWAYS start with `/sn-plan` — even if the request seems simple.
 
 ## End-to-End Workflow
 
 When a user asks you to build a ServiceNow app, follow this workflow:
 
-### 1. Discover
-Run `/sn-discover` with the target table to understand what already exists on the instance — business rules, UI policies, ACLs, notifications, SLAs. Present a summary to the user.
+### 1. Plan (from Intent)
+Run `/sn-plan` with the developer's intent. The skill classifies the domain, runs `/sn-discover` to understand what exists, asks adaptive follow-up questions, and produces a structured plan (scope, behaviors, decision matrix, assumptions). Wait for the developer to approve the plan before proceeding.
 
 ### 2. Generate Contracts
-Based on the user's intent and the discovered metadata, run `/sn-generate-contracts` to write Gherkin .feature files to `contracts/`. Each contract defines the expected behavior of the app.
+Run `/sn-generate-contracts` to mechanically translate the approved plan into Gherkin .feature files in `contracts/`. Each behavior from the plan becomes one or more scenarios. Decision matrices become Scenario Outlines.
 
-### 3. Review & Approve
+### 3. Review & Approve Contracts
 Run `/sn-review-contracts` and present the contracts to the user. Wait for their approval. If they want changes, use `/sn-edit-contract`.
 
-### 4. Deploy
-Use `/sn-deploy` to push the app artifacts (business rules, UI policies, client scripts, etc.) to the ServiceNow instance. Save all returned sys_ids for potential cleanup.
+### 4. Execute (RED)
+Run `npm run codegen && npm test` to generate Playwright specs and execute them. All tests should FAIL — nothing is deployed yet. This validates the contracts test something real.
 
-### 5. Execute
-Run `/sn-execute` to parse the contracts into a Playwright execution plan. If Playwright MCP tools are available, execute the plan against the live instance. Record PASS/FAIL for each scenario.
+### 5. Deploy (Incremental)
+Use `/sn-deploy` to push the first artifact to the ServiceNow instance. Deploy automatically snapshots the pre-deploy state to `test-results/deploy-snapshot.json` for rollback.
 
-### 6. Diagnose & Fix
-If any tests fail, run `/sn-diagnose` with the table, error message, and scenario name. Analyze the diagnostic data to identify the root cause. Fix the app artifacts and re-test.
+### 6. Execute (GREEN)
+Run `npm test` again. The first set of scenarios should now PASS. If any fail, run `/sn-diagnose` to find the root cause, fix, and re-test.
 
-### 7. Summary
+### 7. Repeat 5-6
+Deploy the next artifact, run tests, confirm new scenarios pass while existing ones stay green. Continue until all contracts pass.
+
+### 8. Summary
 Run `/sn-summary` to generate the quality report — contract count, coverage %, pass rate, and quality gate status.
 
-### 8. Cleanup (if needed)
-Run `/sn-cleanup` to remove any test records or artifacts that should not persist on the instance.
+### 9. Commit + PR
+Commit contracts, generated specs, test results, and app code. Open PR — CI quality gate validates.
+
+### 10. Cleanup / Rollback (if needed)
+Run `/sn-cleanup` to remove test records (cascade-deletes child SLAs, emails, journal entries). Run `/sn-rollback` to reverse deployed artifacts to their original state.
 
 ## CLI Runner
 
@@ -58,7 +72,7 @@ All API skills use `src/run.ts` as the CLI entry point:
 npx tsx src/run.ts <command> '<json-args>'
 ```
 
-Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`
+Commands: `query`, `check-exists`, `discover`, `deploy`, `cleanup`, `diagnose`, `summary`, `report`, `record`, `rollback`
 
 ## Credentials
 
@@ -67,8 +81,14 @@ Instance credentials are stored in `.env` (gitignored). The CLI runner loads the
 ## Project Structure
 
 - `src/sn-client.ts` — ServiceNow REST API client
+- `src/results-writer.ts` — Test results and record registry persistence
+- `src/codegen.ts` — Gherkin-to-Playwright codegen (contracts → .spec.ts)
 - `src/run.ts` — CLI runner for skills
 - `.claude/skills/` — Claude Code skill definitions
 - `contracts/` — Generated Gherkin .feature files
+- `test-results/results.json` — Structured test results (Playwright-compatible format for CI)
+- `test-results/records.json` — Registry of sys_ids created during testing (for cleanup)
+- `test-results/deploy-snapshot.json` — Pre-deploy state snapshot (for rollback)
+- `tests/generated/` — Playwright specs generated by codegen
 - `tests/` — Smoke tests
 - `.github/workflows/` — CI/CD quality gate

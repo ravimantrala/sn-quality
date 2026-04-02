@@ -1,0 +1,802 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\playwright.config.ts",
+    "rootDir": "C:/Users/ravi.mantrala/documents/claude_builds/sn-quality/tests/generated",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/ravi.mantrala/documents/claude_builds/sn-quality/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Users/ravi.mantrala/documents/claude_builds/sn-quality/tests/generated",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "hardware-checkout-catalog-item.spec.ts",
+      "file": "hardware-checkout-catalog-item.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Hardware Checkout Catalog Item",
+          "file": "hardware-checkout-catalog-item.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Hardware Checkout catalog item is available with device type choices",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 544,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:06.899Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e0a2efd59ba60c2ac526-93685107f4a4be0f3b1b",
+              "file": "hardware-checkout-catalog-item.spec.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "Device request is auto-approved",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5445,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:07.467Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "e0a2efd59ba60c2ac526-bb3e2315f156c6660f77",
+              "file": "hardware-checkout-catalog-item.spec.ts",
+              "line": 39,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "hardware-checkout-device-types.spec.ts",
+      "file": "hardware-checkout-device-types.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Hardware Checkout Device Type Validation",
+          "file": "hardware-checkout-device-types.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Each device type creates an auto-approved requested item (device_type=mac_laptop, device_label=Mac Laptop)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5246,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:14.233Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13af69a5f9f0f5f8d45-5463426a59c0d4b8774b",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "Each device type creates an auto-approved requested item (device_type=windows_laptop, device_label=Windows Laptop)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5267,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:19.493Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13af69a5f9f0f5f8d45-4e9e67f00e62686435a0",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 61,
+              "column": 7
+            },
+            {
+              "title": "Each device type creates an auto-approved requested item (device_type=iphone, device_label=iPhone)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5336,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:24.780Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13af69a5f9f0f5f8d45-1f13f6c7348e22ef1e39",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 102,
+              "column": 7
+            },
+            {
+              "title": "Each device type creates an auto-approved requested item (device_type=android_phone, device_label=Android Phone)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5289,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:30.137Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13af69a5f9f0f5f8d45-a64869b186e3db60fbe5",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 143,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incident-p1-lifecycle.spec.ts",
+      "file": "incident-p1-lifecycle.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "ServiceNow P1 Incident Lifecycle",
+          "file": "incident-p1-lifecycle.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Create a P1 incident with required fields and validate priority engine",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 583,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:39.714Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "5e8b3151168f656cac91-31bfd28a6347a78b07e6",
+              "file": "incident-p1-lifecycle.spec.ts",
+              "line": 20,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incident-priority-matrix.spec.ts",
+      "file": "incident-priority-matrix.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Incident Auto-Priority Assignment Matrix",
+          "file": "incident-priority-matrix.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=1 - High, expected_priority=1 - Critical)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 394,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:40.944Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-edb2cd2849ab10426969",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=2 - Medium, expected_priority=2 - High)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 602,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:41.357Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-835434b9ef69976df40b",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 44,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=3 - Low, expected_priority=3 - Moderate)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 461,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:41.974Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-89a9f11586cf3acb8e66",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 68,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=1 - High, expected_priority=2 - High)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 632,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:42.443Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-8f47cfc89c851bd7e366",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 92,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=2 - Medium, expected_priority=3 - Moderate)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 487,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:43.089Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-db7a03158b89c594fbfd",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 116,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=3 - Low, expected_priority=4 - Low)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 585,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:43.589Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-fcb5b5f1f71b13419122",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 140,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=1 - High, expected_priority=3 - Moderate)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 523,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:44.183Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-44d5905d2bc9d2de8727",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 164,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=2 - Medium, expected_priority=4 - Low)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 574,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:44.720Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-c6f6b20e91aee4d8e088",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 188,
+              "column": 7
+            },
+            {
+              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=3 - Low, expected_priority=5 - Planning)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 360,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:45.304Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "865e9c1975fa4d946e11-fdd352caf70e8ddee879",
+              "file": "incident-priority-matrix.spec.ts",
+              "line": 212,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "incident-priority-recalculation.spec.ts",
+      "file": "incident-priority-recalculation.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Priority Recalculates When Impact or Urgency Changes",
+          "file": "incident-priority-recalculation.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Priority upgrades when urgency is raised on existing incident",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1347,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:50.637Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3d67f12f1458e41df738-55d89aa954e5759be211",
+              "file": "incident-priority-recalculation.spec.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "Priority upgrades when impact is raised on existing incident",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1064,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:51.992Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3d67f12f1458e41df738-7eaec649222aa17c181e",
+              "file": "incident-priority-recalculation.spec.ts",
+              "line": 52,
+              "column": 7
+            },
+            {
+              "title": "Priority jumps to Critical when both impact and urgency are raised",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 915,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-02T02:53:53.068Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "3d67f12f1458e41df738-e443628961f2b85a165a",
+              "file": "incident-priority-recalculation.spec.ts",
+              "line": 84,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-02T02:53:05.374Z",
+    "duration": 50499.11,
+    "expected": 19,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

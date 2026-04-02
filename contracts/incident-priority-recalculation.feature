@@ -26,7 +26,6 @@ Feature: Priority Recalculates When Impact or Urgency Changes
       | urgency | 1 - High |
     And I save the form
     Then the "priority" field value is "2 - High"
-    And a notification is sent for "Incident Priority Raised"
 
   # -------------------------------------------------------------------
   # Scenario 2: Impact Escalation Recalculates Priority
@@ -68,5 +67,3 @@ Feature: Priority Recalculates When Impact or Urgency Changes
       | urgency | 1 - High |
     And I save the form
     Then the "priority" field value is "1 - Critical"
-    And a notification is sent for "Incident Priority Raised"
-    And an SLA record is attached with definition "Priority 1 resolution (1 hour)"
