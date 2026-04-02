@@ -1,10 +1,10 @@
 # sn-quality — AI-Native Dev-Test for ServiceNow
 
-sn-quality is an AI-native TDD experience for building ServiceNow apps. Describe what you want, Claude discovers your instance, generates Gherkin contracts, Build Agent creates the app using Now SDK/Fluent, tests run against the live instance, and a PR goes through the CI quality gate with tests packaged alongside app code.
+sn-quality is an AI-native TDD experience for building ServiceNow apps. Describe what you want, Claude discovers your instance, generates Gherkin contracts and build specs using Build Agent skills, builds the app with Now SDK/Fluent, tests it against the live instance, and opens a PR through the CI quality gate with tests packaged alongside app code.
 
 **Gherkin contracts → Playwright .spec.ts → `npm test` → results.json**
 
-The entire plan-test-build-deploy loop stays in the conversation.
+The entire plan-test-build-deploy loop stays in the conversation. Claude Code does everything, guided by Build Agent skills for ServiceNow-specific knowledge.
 
 ## Quick Start
 
@@ -44,9 +44,9 @@ You: "Build me a hardware checkout catalog item"
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
-        │  3. Build Agent       │  ← Gherkin contracts + build specs
-        │     generates         │    using Build Agent skills
-        │     contracts         │    + Playwright specs (runnable code)
+        │  3. Claude generates  │  ← Gherkin contracts + build specs
+        │     contracts using   │    guided by Build Agent skills
+        │     Build Agent skills│    + Playwright specs (runnable code)
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
@@ -60,8 +60,9 @@ You: "Build me a hardware checkout catalog item"
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
-        │  6. Build Agent       │  ← Now SDK/Fluent generates .now.ts
-        │     builds + deploys  │    artifacts, deploys to instance
+        │  6. Claude builds +   │  ← Now SDK/Fluent generates .now.ts
+        │     deploys using     │    artifacts, deploys to instance
+        │     Build Agent skills│
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
@@ -75,7 +76,7 @@ You: "Build me a hardware checkout catalog item"
         └───────────────────────┘
 ```
 
-You stay in the conversation the whole time. Claude handles discovery, planning, building, testing, and deployment.
+You stay in the conversation the whole time. Claude Code handles everything — discovery, planning, contract generation, building, testing, and deployment — using Build Agent skills for ServiceNow platform knowledge.
 
 ## TDD Workflow (Detail)
 
@@ -95,9 +96,11 @@ You stay in the conversation the whole time. Claude handles discovery, planning,
 11. git push + PR          → CI quality gate validates
 ```
 
-## Build Agent Integration
+## Build Agent Skills
 
-Build Agent skills (from `/tmp/build-agent-skills/skills/`) teach Claude Code how to write Now SDK Fluent code for each ServiceNow artifact type. They're used in two places:
+Build Agent skills are instruction files (from `/tmp/build-agent-skills/skills/`) that teach Claude Code how to work with ServiceNow platform concepts — tables, business rules, client scripts, catalog items, etc. They provide Fluent API patterns, field mappings, and best practices.
+
+Claude Code loads these skills in two places:
 
 - **`/sn-generate-contracts`** — reads skills to ensure `.build.md` specs use correct field names and patterns
 - **`/sn-build`** — reads skills + knowledge references to generate `.now.ts` Fluent code in `app/src/fluent/`
