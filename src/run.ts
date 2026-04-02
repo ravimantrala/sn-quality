@@ -94,40 +94,66 @@ async function run() {
     }
 
     case "deploy": {
-      const TABLE_MAP: Record<string, string> = {
-        business_rule: "sys_script", ui_policy: "sys_ui_policy", acl: "sys_security_acl",
-        notification: "sysevent_email_action", client_script: "sys_script_client",
-      };
+      // Table-agnostic deploy: works with any ServiceNow table
+      // Each record specifies: target_table, lookup (query to find existing), fields
       const results = [];
-      for (const art of args.artifacts) {
-        const targetTable = TABLE_MAP[art.type];
-        if (!targetTable) { results.push({ name: art.name, type: art.type, action: "error", detail: "unknown type" }); continue; }
-        const existing = await sn().query({ table: targetTable, query: `name=${art.name}^collection=${art.table}`, fields: ["sys_id"], limit: 1 });
-        if (existing.length > 0) {
-          // Snapshot: capture full record state before overwriting
-          const original = await sn().getRecord(targetTable, existing[0].sys_id);
-          const rec = await sn().update(targetTable, existing[0].sys_id, art.config);
-          appendSnapshotEntry({
-            table: targetTable,
-            sys_id: rec.sys_id,
-            name: art.name,
-            type: art.type,
-            action: "updated",
-            original_values: original,
-            deployed_at: new Date().toISOString(),
-          });
-          results.push({ name: art.name, type: art.type, action: "updated", sys_id: rec.sys_id });
-        } else {
-          const rec = await sn().insert(targetTable, { name: art.name, collection: art.table, ...art.config });
-          appendSnapshotEntry({
-            table: targetTable,
-            sys_id: rec.sys_id,
-            name: art.name,
-            type: art.type,
-            action: "created",
-            deployed_at: new Date().toISOString(),
-          });
-          results.push({ name: art.name, type: art.type, action: "created", sys_id: rec.sys_id });
+      for (const rec of args.records) {
+        const targetTable = rec.target_table;
+        const lookup = rec.lookup; // encoded query to find existing record
+        const fields = rec.fields;
+        const label = rec.label || `${targetTable} record`;
+
+        if (!targetTable || !fields) {
+          results.push({ label, action: "error", detail: "target_table and fields are required" });
+          continue;
+        }
+
+        try {
+          if (lookup) {
+            // Check if record exists
+            const existing = await sn().query({ table: targetTable, query: lookup, fields: ["sys_id"], limit: 1 });
+            if (existing.length > 0) {
+              // Snapshot + update
+              const original = await sn().getRecord(targetTable, existing[0].sys_id);
+              const updated = await sn().update(targetTable, existing[0].sys_id, fields);
+              appendSnapshotEntry({
+                table: targetTable,
+                sys_id: updated.sys_id,
+                name: label,
+                type: targetTable,
+                action: "updated",
+                original_values: original,
+                deployed_at: new Date().toISOString(),
+              });
+              results.push({ label, table: targetTable, action: "updated", sys_id: updated.sys_id });
+            } else {
+              // Insert
+              const created = await sn().insert(targetTable, fields);
+              appendSnapshotEntry({
+                table: targetTable,
+                sys_id: created.sys_id,
+                name: label,
+                type: targetTable,
+                action: "created",
+                deployed_at: new Date().toISOString(),
+              });
+              results.push({ label, table: targetTable, action: "created", sys_id: created.sys_id });
+            }
+          } else {
+            // No lookup — always insert
+            const created = await sn().insert(targetTable, fields);
+            appendSnapshotEntry({
+              table: targetTable,
+              sys_id: created.sys_id,
+              name: label,
+              type: targetTable,
+              action: "created",
+              deployed_at: new Date().toISOString(),
+            });
+            results.push({ label, table: targetTable, action: "created", sys_id: created.sys_id });
+          }
+        } catch (e: unknown) {
+          results.push({ label, table: targetTable, action: "error", detail: e instanceof Error ? e.message : String(e) });
         }
       }
       console.log(JSON.stringify(results, null, 2));
