@@ -5,6 +5,4 @@ playwright-report/
 test-results/
 !test-results/results.json
 .playwright-mcp/
-app/node_modules/
-app/dist/
 app/.now/

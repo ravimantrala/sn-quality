@@ -24,7 +24,7 @@ table: incident
   | action | insert, update |
   | order | 50 |
   | active | true |
-  | filterCondition | impact CHANGES OR urgency CHANGES |
+  | filterCondition | impactCHANGES^ORurgencyCHANGES |
 - **Logic (priority matrix):**
   | Impact | Urgency | → Priority |
   |--------|---------|-----------|

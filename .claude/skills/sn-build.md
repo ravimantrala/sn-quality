@@ -12,7 +12,7 @@ Build ServiceNow artifacts from `.build.md` specs using the Now SDK Fluent API, 
 ## When to Use
 
 - After contracts are approved and RED tests have run (all fail)
-- Step 6 of the TDD workflow: build and deploy the app
+- Step 5 of the TDD workflow: build and deploy the app
 
 ## Prerequisites
 

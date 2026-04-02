@@ -356,8 +356,10 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
 function emitActions(actions: CodeAction[], indent: string): string {
   const lines: string[] = [];
   let refetchCounter = 0;
+  let lastTable = "incident";
 
   for (const action of actions) {
+    if ("table" in action && action.table && action.table !== "__catalog_order__") lastTable = action.table;
     switch (action.type) {
       case "create": {
         if (action.table === "__catalog_order__") {
@@ -427,7 +429,7 @@ function emitActions(actions: CodeAction[], indent: string): string {
         const apiValue = mapToApiValue(action.field, action.value);
         // Re-fetch the record to capture server-side computed fields (business rules, etc.)
         const refetchVar = `refetch${refetchCounter++}`;
-        lines.push(`${indent}const ${refetchVar}Res = await request.get(\`/api/now/table/\${${action.varName}.sys_class_name || "incident"}/\${${action.varName}.sys_id}?sysparm_fields=${action.field}\`);`);
+        lines.push(`${indent}const ${refetchVar}Res = await request.get(\`/api/now/table/\${${action.varName}.sys_class_name || "${lastTable}"}/\${${action.varName}.sys_id}?sysparm_fields=${action.field}\`);`);
         lines.push(`${indent}const ${refetchVar} = (await ${refetchVar}Res.json()).result;`);
         lines.push(`${indent}expect(${refetchVar}.${action.field}).toBe("${apiValue}");`);
         break;

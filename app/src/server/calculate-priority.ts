@@ -1,5 +1,5 @@
-export function calculatePriority(current: any, previous: any) {
-  var matrix: Record<string, number> = {
+export function calculatePriority(current: any) {
+  const matrix: Record<string, number> = {
     '1_1': 1,
     '1_2': 2,
     '1_3': 3,
@@ -10,6 +10,6 @@ export function calculatePriority(current: any, previous: any) {
     '3_2': 4,
     '3_3': 5,
   };
-  var key = current.impact + '_' + current.urgency;
+  const key = current.impact + '_' + current.urgency;
   current.priority = matrix[key] || 5;
 }
