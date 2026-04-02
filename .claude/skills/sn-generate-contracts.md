@@ -1,13 +1,14 @@
 ---
 name: sn-generate-contracts
-description: Generate paired Gherkin test contracts (.feature) and build specs (.build.md) from an approved plan. Every feature file gets a build spec. Use when the user wants to create test contracts for their ServiceNow app.
+description: Generate paired Gherkin test contracts (.feature) and build specs (.build.md) from an approved plan. Every feature file gets a build spec. Uses Build Agent skills for accurate artifact definitions. Use when the user wants to create test contracts for their ServiceNow app.
+allowed-tools: Read, Write, Grep, Glob
 ---
 
 # SN Generate Contracts
 
 Generate **paired** files from an approved `/sn-plan` output:
 - `.feature` — Gherkin test contract (what to test, for Playwright)
-- `.build.md` — Build spec (what to create, for Build Agent)
+- `.build.md` — Build spec (what to create, for Build Agent via `/sn-build`)
 
 These are always 1:1. Every `.feature` MUST have a `.build.md`. They come from the same plan.
 
@@ -15,12 +16,47 @@ These are always 1:1. Every `.feature` MUST have a `.build.md`. They come from t
 
 1. **Require an approved plan.** Do NOT generate contracts without a plan from `/sn-plan`. The plan's Behaviors become Gherkin scenarios. The plan's Decision Matrix becomes Scenario Outlines. The plan's Assumptions become background context.
 2. If instance metadata isn't already available, run `/sn-discover` first
-3. Generate the `.feature` file following the Gherkin Style Guide below
-4. Generate the paired `.build.md` file following the Build Spec Format below
-5. Write both files to the `contracts/` directory:
+3. **Load Build Agent skills** for each artifact type in the plan (see Build Agent Skill Loading below)
+4. Generate the `.feature` file following the Gherkin Style Guide below
+5. Generate the paired `.build.md` file following the Build Spec Format below — using Build Agent skill knowledge to ensure artifact definitions match what the skills expect
+6. Write both files to the `contracts/` directory:
    - `contracts/<name>.feature` — Gherkin test contract
    - `contracts/<name>.build.md` — Build spec for Build Agent
    - Use kebab-case for filenames (e.g. `incident-auto-priority.feature` + `incident-auto-priority.build.md`)
+
+## Build Agent Skill Loading
+
+Before generating the `.build.md`, identify which artifact types the plan requires (business rules, UI policies, catalog items, etc.) and load the corresponding Build Agent skills from `/tmp/build-agent-skills/skills/`:
+
+| Artifact Type | Skill to Load |
+|--------------|---------------|
+| Business Rule | `sn-business-rule/SKILL.md` + `references/knowledge/business-rule.md` |
+| Client Script | `sn-client-script/SKILL.md` + `references/knowledge/client-script.md` |
+| UI Policy | (use SDK docs — supported in SDK 4.3+) |
+| Script Include | `sn-script-include/SKILL.md` + `references/knowledge/script-include.md` |
+| Table | `sn-table/SKILL.md` + `references/knowledge/table.md` |
+| Catalog Item/Variable | `sn-service-catalog/SKILL.md` + `references/knowledge/service-catalog.md` |
+| Email Notification | `sn-email-notification/SKILL.md` + `references/knowledge/email-notification.md` |
+| Scheduled Script | `sn-scheduled-script/SKILL.md` + `references/knowledge/scheduled-script.md` |
+| Scripted REST API | `sn-scripted-rest-api/SKILL.md` + `references/knowledge/scripted-rest-api.md` |
+| Flow | `sn-wfa-flow/SKILL.md` + `references/knowledge/wfa-flow.md` |
+| ACL/Security | `sn-implementing-security/SKILL.md` + `references/knowledge/implementing-security.md` |
+
+Read the SKILL.md to understand:
+- Required and optional fields for the artifact type
+- Naming conventions and best practices
+- Avoidance patterns (what NOT to do)
+- Correct timing/trigger values
+
+Read the knowledge reference to understand:
+- Fluent API object properties and their valid values
+- Code examples showing correct syntax
+
+Use this knowledge when writing the `.build.md` so that:
+- The **Skill:** field references the correct Build Agent skill name
+- The **Fields:** table uses field names that match the Fluent API
+- The **Logic:** section is detailed enough for `/sn-build` to generate working code
+- The **Trigger/Condition** values use valid options for that artifact type
 
 ## Gherkin Style Guide — ALWAYS follow this
 

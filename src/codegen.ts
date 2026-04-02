@@ -355,6 +355,7 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
 
 function emitActions(actions: CodeAction[], indent: string): string {
   const lines: string[] = [];
+  let refetchCounter = 0;
 
   for (const action of actions) {
     switch (action.type) {
@@ -424,7 +425,11 @@ function emitActions(actions: CodeAction[], indent: string): string {
       case "assert_field": {
         // Map ServiceNow display values to API values
         const apiValue = mapToApiValue(action.field, action.value);
-        lines.push(`${indent}expect(${action.varName}.${action.field}).toBe("${apiValue}");`);
+        // Re-fetch the record to capture server-side computed fields (business rules, etc.)
+        const refetchVar = `refetch${refetchCounter++}`;
+        lines.push(`${indent}const ${refetchVar}Res = await request.get(\`/api/now/table/\${${action.varName}.sys_class_name || "incident"}/\${${action.varName}.sys_id}?sysparm_fields=${action.field}\`);`);
+        lines.push(`${indent}const ${refetchVar} = (await ${refetchVar}Res.json()).result;`);
+        lines.push(`${indent}expect(${refetchVar}.${action.field}).toBe("${apiValue}");`);
         break;
       }
 

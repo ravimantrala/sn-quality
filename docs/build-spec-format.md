@@ -1,8 +1,8 @@
 # Build Spec Format
 
-Build specs (`.build.md`) are paired 1:1 with Gherkin contracts (`.feature`). They tell Build Agent **what to create** on the ServiceNow instance to make the contract's tests pass.
+Build specs (`.build.md`) are paired 1:1 with Gherkin contracts (`.feature`). They tell `/sn-build` **what to create** on the ServiceNow instance to make the contract's tests pass.
 
-Build Agent uses skills from `dev/build-agent-skills` (installed via `sn-skills add dev/build-agent-skills`). Each artifact in the build spec maps to a specific Build Agent skill.
+`/sn-build` uses Build Agent skills from `/tmp/build-agent-skills/skills/` to generate Now SDK Fluent code. Each artifact in the build spec maps to a specific Build Agent skill, which teaches Claude Code how to write the correct `.now.ts` file.
 
 ## File naming
 
@@ -176,3 +176,48 @@ table: incident
 - Business Rule "Auto Priority from Impact Urgency": delete (new record)
 - UI Policy "Priority Read-Only": delete (new record)
 ```
+
+## Fluent Output Paths
+
+When `/sn-build` processes a build spec, each artifact generates files in the `app/` Now SDK project:
+
+| Artifact Type | Fluent Directory | Server Script |
+|---------------|-----------------|---------------|
+| Business Rule | `app/src/fluent/business-rules/<name>.now.ts` | `app/src/server/<name>.ts` |
+| Client Script | `app/src/fluent/client-scripts/<name>.now.ts` | `app/src/server/<name>.ts` |
+| UI Policy | `app/src/fluent/ui-policies/<name>.now.ts` | — |
+| Script Include | `app/src/fluent/script-includes/<name>.now.ts` | `app/src/server/<name>.ts` |
+| Table | `app/src/fluent/tables/<name>.now.ts` | — |
+| Catalog Item | `app/src/fluent/catalog/<name>.now.ts` | — |
+| Email Notification | `app/src/fluent/notifications/<name>.now.ts` | — |
+| Scripted REST API | `app/src/fluent/rest-api/<name>.now.ts` | `app/src/server/<name>.ts` |
+| Flow | `app/src/fluent/flows/<name>.now.ts` | — |
+| Module | `app/src/fluent/modules/<name>.now.ts` | — |
+| Property | `app/src/fluent/properties/<name>.now.ts` | — |
+| Scheduled Script | `app/src/fluent/scheduled/<name>.now.ts` | `app/src/server/<name>.ts` |
+
+All `.now.ts` files must be imported from `app/src/fluent/index.now.ts` (the main entry point).
+
+## SDK vs REST API Deploy
+
+`/sn-build` defaults to the Now SDK deploy path (`npm run deploy` in `app/`). It falls back to REST API (`/sn-deploy`) when:
+
+- The artifact type has no Fluent API support in the current SDK version
+- The Now SDK build fails for a specific artifact after 3 retry attempts
+- The `.build.md` explicitly notes a REST-only artifact
+
+Both paths write entries to `test-results/deploy-snapshot.json` so `/sn-rollback` works universally regardless of which deploy method was used.
+
+## Skill Reference Paths
+
+The `Skill:` field in each artifact maps to a Build Agent skill directory:
+
+```
+/tmp/build-agent-skills/skills/<skill-name>/
+  SKILL.md                          — Skill instructions (when to use, best practices, avoidance)
+  references/
+    knowledge/<type>.md             — Fluent API properties, code examples, valid values
+    *.md                            — Additional reference files (column definitions, etc.)
+```
+
+`/sn-generate-contracts` reads these skills when generating `.build.md` to ensure field names, trigger values, and patterns match what `/sn-build` expects.

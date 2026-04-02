@@ -1,0 +1,6 @@
+{
+  "scope": "x_snc_quality",
+  "scopeId": "30b39b6b21f349f0b362f4544295192c",
+  "name": "SN Quality App",
+  "tsconfigPath": "./src/server/tsconfig.json"
+}
