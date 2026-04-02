@@ -1,5 +1,7 @@
 node_modules/
 dist/
 .env
-test-results/
 playwright-report/
+test-results/
+!test-results/results.json
+.playwright-mcp/
