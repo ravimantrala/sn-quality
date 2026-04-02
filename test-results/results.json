@@ -59,20 +59,20 @@
   },
   "suites": [
     {
-      "title": "incident-auto-priority-matrix.spec.ts",
-      "file": "incident-auto-priority-matrix.spec.ts",
+      "title": "hardware-checkout-catalog-item.spec.ts",
+      "file": "hardware-checkout-catalog-item.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Incident Auto-Priority Assignment Based on Impact and Urgency",
-          "file": "incident-auto-priority-matrix.spec.ts",
-          "line": 5,
+          "title": "Hardware Checkout Catalog Item",
+          "file": "hardware-checkout-catalog-item.spec.ts",
+          "line": 4,
           "column": 6,
           "specs": [
             {
-              "title": "High Impact + High Urgency = Critical Priority (P1)",
+              "title": "Hardware Checkout catalog item is available with device type choices",
               "ok": true,
               "tags": [],
               "tests": [
@@ -87,12 +87,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 27,
+                      "duration": 1022,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.268Z",
+                      "startTime": "2026-04-02T00:29:53.218Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -100,13 +100,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "9f6399e56530a2a31c96-834c5d1bf75b541fd584",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 26,
+              "id": "e0a2efd59ba60c2ac526-93685107f4a4be0f3b1b",
+              "file": "hardware-checkout-catalog-item.spec.ts",
+              "line": 20,
               "column": 7
             },
             {
-              "title": "High Impact + Medium Urgency = High Priority (P2)",
+              "title": "Device request is auto-approved",
               "ok": true,
               "tags": [],
               "tests": [
@@ -121,12 +121,12 @@
                       "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 9,
+                      "duration": 5675,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.316Z",
+                      "startTime": "2026-04-02T00:29:54.265Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -134,247 +134,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "9f6399e56530a2a31c96-71c2ef03349433c216ba",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 30,
-              "column": 7
-            },
-            {
-              "title": "High Impact + Low Urgency = Moderate Priority (P3)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 11,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.335Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-8558f808da07ddff1134",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 34,
-              "column": 7
-            },
-            {
-              "title": "Medium Impact + High Urgency = High Priority (P2)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 11,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.357Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-57ea5d4ef104acc652ac",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 38,
-              "column": 7
-            },
-            {
-              "title": "Medium Impact + Medium Urgency = Moderate Priority (P3)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.378Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-27451bd9d9c67abd0c6a",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 42,
-              "column": 7
-            },
-            {
-              "title": "Medium Impact + Low Urgency = Low Priority (P4)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 15,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.396Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-509077c5f8191bd7ec0e",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 46,
-              "column": 7
-            },
-            {
-              "title": "Low Impact + High Urgency = Moderate Priority (P3)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 6,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.420Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-6fed32f0cdeb299b845f",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 50,
-              "column": 7
-            },
-            {
-              "title": "Low Impact + Medium Urgency = Low Priority (P4)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 7,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.434Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-493546a84879cf35083d",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 54,
-              "column": 7
-            },
-            {
-              "title": "Low Impact + Low Urgency = Planning Priority (P5)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 8,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.451Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "9f6399e56530a2a31c96-f0e5a735dca01379f1c9",
-              "file": "incident-auto-priority-matrix.spec.ts",
-              "line": 58,
+              "id": "e0a2efd59ba60c2ac526-bb3e2315f156c6660f77",
+              "file": "hardware-checkout-catalog-item.spec.ts",
+              "line": 39,
               "column": 7
             }
           ]
@@ -382,21 +144,21 @@
       ]
     },
     {
-      "title": "incident-p1-lifecycle.spec.ts",
-      "file": "incident-p1-lifecycle.spec.ts",
+      "title": "hardware-checkout-device-types.spec.ts",
+      "file": "hardware-checkout-device-types.spec.ts",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "ServiceNow P1 Incident Lifecycle",
-          "file": "incident-p1-lifecycle.spec.ts",
-          "line": 5,
+          "title": "Hardware Checkout Device Type Validation",
+          "file": "hardware-checkout-device-types.spec.ts",
+          "line": 4,
           "column": 6,
           "specs": [
             {
-              "title": "Create a P1 incident with required fields and validate priority engine",
-              "ok": false,
+              "title": "Each device type creates an auto-approved requested item (device_type=mac_laptop, device_label=Mac Laptop)",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -409,373 +171,27 @@
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 61877,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                            "column": 63,
-                            "line": 30
-                          },
-                          "message": "Error: locator.fill: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sys_display\\\\.incident\\\\.caller_id')\u001b[22m\n\n\n  28 |     await page.waitForLoadState(\"networkidle\");\n  29 |     // TODO: I click \"New\"\n> 30 |     await page.locator('#sys_display\\\\.incident\\\\.caller_id').fill(\"Abel Tuter\");\n     |                                                               ^\n  31 |     await page.waitForTimeout(500);\n  32 |     await page.keyboard.press(\"Tab\");\n  33 |     await page.waitForTimeout(500);\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:30:63"
-                        }
-                      ],
+                      "status": "passed",
+                      "duration": 5545,
+                      "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:41:10.482Z",
+                      "startTime": "2026-04-02T00:30:01.567Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-f6ff8-nd-validate-priority-engine\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-f6ff8-nd-validate-priority-engine\\error-context.md"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-f6ff8-nd-validate-priority-engine\\error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-f6ff8-nd-validate-priority-engine\\trace.zip"
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
-              "id": "5e8b3151168f656cac91-31bfd28a6347a78b07e6",
-              "file": "incident-p1-lifecycle.spec.ts",
-              "line": 26,
+              "id": "c13af69a5f9f0f5f8d45-5463426a59c0d4b8774b",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 20,
               "column": 7
             },
             {
-              "title": "Priority field cannot be manually overridden",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 8653,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#incident\\\\.priority')\nExpected: disabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#incident\\\\.priority')\u001b[22m\n\u001b[2m    - waiting for\" https://emprmantrala.service-now.com/nav_to.do?uri=welcome.do\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://emprmantrala.service-now.com/navpage.do\"\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#incident\\\\.priority')\nExpected: disabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#incident\\\\.priority')\u001b[22m\n\u001b[2m    - waiting for\" https://emprmantrala.service-now.com/nav_to.do?uri=welcome.do\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://emprmantrala.service-now.com/navpage.do\"\u001b[22m\n\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:66:30",
-                        "location": {
-                          "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                          "column": 30,
-                          "line": 66
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 64 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m\"networkidle\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 65 |\u001b[39m     \u001b[36mconst\u001b[39m priorityEl \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#incident\\\\.priority'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 66 |\u001b[39m     \u001b[36mawait\u001b[39m expect(priorityEl)\u001b[33m.\u001b[39mtoBeDisabled()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 67 |\u001b[39m     \u001b[36mconst\u001b[39m priorityVal \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'#incident\\\\.priority'\u001b[39m)\u001b[33m.\u001b[39minputValue()\u001b[33m;\u001b[39m\n \u001b[90m 68 |\u001b[39m     expect(priorityVal)\u001b[33m.\u001b[39mtoBe(\u001b[32m\"1\"\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 69 |\u001b[39m   })\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                            "column": 30,
-                            "line": 66
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeDisabled\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#incident\\\\.priority')\nExpected: disabled\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeDisabled\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#incident\\\\.priority')\u001b[22m\n\u001b[2m    - waiting for\" https://emprmantrala.service-now.com/nav_to.do?uri=welcome.do\" navigation to finish...\u001b[22m\n\u001b[2m    - navigated to \"https://emprmantrala.service-now.com/navpage.do\"\u001b[22m\n\n\n  64 |     await page.waitForLoadState(\"networkidle\");\n  65 |     const priorityEl = page.locator('#incident\\\\.priority');\n> 66 |     await expect(priorityEl).toBeDisabled();\n     |                              ^\n  67 |     const priorityVal = await page.locator('#incident\\\\.priority').inputValue();\n  68 |     expect(priorityVal).toBe(\"1\");\n  69 |   });\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:66:30"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:42:14.938Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-eb84b-nnot-be-manually-overridden\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-eb84b-nnot-be-manually-overridden\\error-context.md"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-eb84b-nnot-be-manually-overridden\\error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-eb84b-nnot-be-manually-overridden\\trace.zip"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                        "column": 30,
-                        "line": 66
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "5e8b3151168f656cac91-5bf340a9d31a9335a61c",
-              "file": "incident-p1-lifecycle.spec.ts",
-              "line": 62,
-              "column": 7
-            },
-            {
-              "title": "Assigning the incident moves state to In Progress",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 61423,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                            "column": 43,
-                            "line": 75
-                          },
-                          "message": "Error: locator.click: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#sysverb_update')\u001b[22m\n\n\n  73 |     await page.waitForLoadState(\"networkidle\");\n  74 |     // TODO: I update the incident with:\n> 75 |     await page.locator('#sysverb_update').click();\n     |                                           ^\n  76 |     await page.waitForLoadState(\"networkidle\");\n  77 |     const stateVal = await page.locator('#incident\\\\.state').inputValue();\n  78 |     expect(stateVal).toBe(\"In Progress\");\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:75:43"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:42:26.080Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-09b69--moves-state-to-In-Progress\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-09b69--moves-state-to-In-Progress\\error-context.md"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-09b69--moves-state-to-In-Progress\\error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-09b69--moves-state-to-In-Progress\\trace.zip"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "5e8b3151168f656cac91-51826d0e40d7bbebf772",
-              "file": "incident-p1-lifecycle.spec.ts",
-              "line": 71,
-              "column": 7
-            },
-            {
-              "title": "SLA response and resolution timers are active",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 61346,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                            "column": 56,
-                            "line": 86
-                          },
-                          "message": "Error: locator.click: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('tab', { name: 'Task SLAs' })\u001b[22m\n\n\n  84 |     await page.goto(`/incident.do?sys_id=${incidentSysId}`);\n  85 |     await page.waitForLoadState(\"networkidle\");\n> 86 |     await page.getByRole(\"tab\", { name: \"Task SLAs\" }).click();\n     |                                                        ^\n  87 |     await page.waitForTimeout(1000);\n  88 |     await expect(page.locator(\"text=Priority 1 resolution (1 hour)\")).toBeVisible();\n  89 |     await expect(page.locator(\"text=Priority 1 response (15 minutes)\")).toBeVisible();\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:86:56"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:43:30.093Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-20b34-esolution-timers-are-active\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-20b34-esolution-timers-are-active\\error-context.md"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-20b34-esolution-timers-are-active\\error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-20b34-esolution-timers-are-active\\trace.zip"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "5e8b3151168f656cac91-cf2683db5a3936fd22e5",
-              "file": "incident-p1-lifecycle.spec.ts",
-              "line": 83,
-              "column": 7
-            },
-            {
-              "title": "Stakeholders are notified when P1 incident is created",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 4,
-                      "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 61808,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 60000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts",
-                            "column": 53,
-                            "line": 95
-                          },
-                          "message": "Error: locator.click: Test timeout of 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('tab', { name: 'Emails' })\u001b[22m\n\n\n  93 |     await page.goto(`/incident.do?sys_id=${incidentSysId}`);\n  94 |     await page.waitForLoadState(\"networkidle\");\n> 95 |     await page.getByRole(\"tab\", { name: \"Emails\" }).click();\n     |                                                     ^\n  96 |     await page.waitForTimeout(1000);\n  97 |     // TODO: an email record exists matching:\n  98 |   });\n    at C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\tests\\generated\\incident-p1-lifecycle.spec.ts:95:53"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:44:33.878Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "screenshot",
-                          "contentType": "image/png",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-3850f-when-P1-incident-is-created\\test-failed-1.png"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-3850f-when-P1-incident-is-created\\error-context.md"
-                        },
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-3850f-when-P1-incident-is-created\\error-context.md"
-                        },
-                        {
-                          "name": "trace",
-                          "contentType": "application/zip",
-                          "path": "C:\\Users\\ravi.mantrala\\documents\\claude_builds\\sn-quality\\test-results\\incident-p1-lifecycle-Serv-3850f-when-P1-incident-is-created\\trace.zip"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "5e8b3151168f656cac91-8ef1295ad9cbfa7457e1",
-              "file": "incident-p1-lifecycle.spec.ts",
-              "line": 92,
-              "column": 7
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "incident-priority-matrix.spec.ts",
-      "file": "incident-priority-matrix.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Incident Auto-Priority Assignment Matrix",
-          "file": "incident-priority-matrix.spec.ts",
-          "line": 5,
-          "column": 6,
-          "specs": [
-            {
-              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=1 - High, expected_priority=1 - Critical)",
+              "title": "Each device type creates an auto-approved requested item (device_type=windows_laptop, device_label=Windows Laptop)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -787,15 +203,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 760,
+                      "duration": 5537,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:45:39.140Z",
+                      "startTime": "2026-04-02T00:30:07.125Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -803,13 +219,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "865e9c1975fa4d946e11-edb2cd2849ab10426969",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 26,
+              "id": "c13af69a5f9f0f5f8d45-4e9e67f00e62686435a0",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 61,
               "column": 7
             },
             {
-              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=2 - Medium, expected_priority=2 - High)",
+              "title": "Each device type creates an auto-approved requested item (device_type=iphone, device_label=iPhone)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -821,15 +237,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 558,
+                      "duration": 5561,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:45:39.932Z",
+                      "startTime": "2026-04-02T00:30:12.676Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -837,13 +253,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "865e9c1975fa4d946e11-835434b9ef69976df40b",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 44,
+              "id": "c13af69a5f9f0f5f8d45-1f13f6c7348e22ef1e39",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 102,
               "column": 7
             },
             {
-              "title": "Priority is calculated from impact and urgency (impact=1 - High, urgency=3 - Low, expected_priority=3 - Moderate)",
+              "title": "Each device type creates an auto-approved requested item (device_type=android_phone, device_label=Android Phone)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -855,15 +271,15 @@
                   "projectName": "",
                   "results": [
                     {
-                      "workerIndex": 5,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 609,
+                      "duration": 5512,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-01T07:45:40.506Z",
+                      "startTime": "2026-04-02T00:30:18.251Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -871,417 +287,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "865e9c1975fa4d946e11-89a9f11586cf3acb8e66",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 62,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=1 - High, expected_priority=2 - High)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 538,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:41.128Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-8f47cfc89c851bd7e366",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 80,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=2 - Medium, expected_priority=3 - Moderate)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 551,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:41.677Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-db7a03158b89c594fbfd",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 98,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=2 - Medium, urgency=3 - Low, expected_priority=4 - Low)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 521,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:42.241Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-fcb5b5f1f71b13419122",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 116,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=1 - High, expected_priority=3 - Moderate)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 680,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:42.772Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-44d5905d2bc9d2de8727",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 134,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=2 - Medium, expected_priority=4 - Low)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 499,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:43.460Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-c6f6b20e91aee4d8e088",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 152,
-              "column": 7
-            },
-            {
-              "title": "Priority is calculated from impact and urgency (impact=3 - Low, urgency=3 - Low, expected_priority=5 - Planning)",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 366,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:43.969Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "865e9c1975fa4d946e11-fdd352caf70e8ddee879",
-              "file": "incident-priority-matrix.spec.ts",
-              "line": 170,
-              "column": 7
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "incident-priority-readonly.spec.ts",
-      "file": "incident-priority-readonly.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Priority Field is Read-Only on Incident Form",
-          "file": "incident-priority-readonly.spec.ts",
-          "line": 5,
-          "column": 6,
-          "specs": [
-            {
-              "title": "Priority field is read-only on new incident",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 10,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:49.449Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "0ed06ad703ea8404530d-52f8ebcbf3f5f997b9de",
-              "file": "incident-priority-readonly.spec.ts",
-              "line": 26,
-              "column": 7
-            },
-            {
-              "title": "Priority field is read-only on existing incident",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 10,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:49.470Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "0ed06ad703ea8404530d-dd1da32951e25a88f17b",
-              "file": "incident-priority-readonly.spec.ts",
-              "line": 30,
-              "column": 7
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "incident-priority-recalculation.spec.ts",
-      "file": "incident-priority-recalculation.spec.ts",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "Priority Recalculates When Impact or Urgency Changes",
-          "file": "incident-priority-recalculation.spec.ts",
-          "line": 5,
-          "column": 6,
-          "specs": [
-            {
-              "title": "Priority upgrades when urgency is raised on existing incident",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 1348,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:49.505Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "3d67f12f1458e41df738-55d89aa954e5759be211",
-              "file": "incident-priority-recalculation.spec.ts",
-              "line": 26,
-              "column": 7
-            },
-            {
-              "title": "Priority upgrades when impact is raised on existing incident",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 978,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:50.863Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "3d67f12f1458e41df738-7eaec649222aa17c181e",
-              "file": "incident-priority-recalculation.spec.ts",
-              "line": 57,
-              "column": 7
-            },
-            {
-              "title": "Priority jumps to Critical when both impact and urgency are raised",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 60000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "",
-                  "projectName": "",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 963,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-01T07:45:51.849Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "3d67f12f1458e41df738-e443628961f2b85a165a",
-              "file": "incident-priority-recalculation.spec.ts",
-              "line": 88,
+              "id": "c13af69a5f9f0f5f8d45-a64869b186e3db60fbe5",
+              "file": "hardware-checkout-device-types.spec.ts",
+              "line": 143,
               "column": 7
             }
           ]
@@ -1291,11 +299,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-04-01T07:41:08.989Z",
-    "duration": 285867.49299999996,
-    "expected": 23,
+    "startTime": "2026-04-02T00:29:51.556Z",
+    "duration": 37245.589,
+    "expected": 6,
     "skipped": 0,
-    "unexpected": 5,
+    "unexpected": 0,
     "flaky": 0
   }
 }
