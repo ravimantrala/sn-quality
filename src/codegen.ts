@@ -103,7 +103,7 @@ function parseFeature(content: string): Feature {
 // ---------------------------------------------------------------------------
 
 type CodeAction =
-  | { type: "create"; table: string; data: Record<string, string>; varName: string }
+  | { type: "create"; table: string; data: Record<string, string>; varName: string; catalogItemName?: string }
   | { type: "update"; sysIdExpr: string; table: string; data: Record<string, string>; varName: string }
   | { type: "query"; table: string; query: string; varName: string }
   | { type: "assert_field"; varName: string; field: string; value: string }
@@ -136,6 +136,23 @@ const TABLE_PATTERNS: Record<string, string> = {
   user: "sys_user",
   group: "sys_user_group",
 };
+
+// Map display values to API values for common ServiceNow fields
+function mapToApiValue(field: string, displayValue: string): string {
+  // Fields where "N - Label" format should map to just "N"
+  if (["priority", "impact", "urgency", "severity"].includes(field)) {
+    const num = displayValue.match(/^(\d)/)?.[1];
+    if (num) return num;
+  }
+  // State fields: display label → numeric code
+  const stateMap: Record<string, string> = {
+    "New": "1", "In Progress": "2", "On Hold": "3", "Resolved": "6", "Closed": "7", "Canceled": "8",
+  };
+  if (["state", "incident_state"].includes(field) && stateMap[displayValue]) {
+    return stateMap[displayValue];
+  }
+  return displayValue;
+}
 
 function detectTable(text: string): string | null {
   const lower = text.toLowerCase();
@@ -185,11 +202,11 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
       for (const row of step.dataTable) {
         if (isVariableTable) {
           const key = row.variable || row.field;
-          data[key] = row.value;
+          data[key] = isCartSubmit ? row.value : mapToApiValue(key, row.value);
         } else {
           // Use first column as key, second as value
           const keys = Object.keys(row);
-          data[keys[0]] = row[keys[0]];
+          data[keys[0]] = mapToApiValue(keys[0], row[keys[0]]);
         }
       }
 
@@ -198,9 +215,11 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
       lastCreateVar = varName;
 
       if (isCartSubmit) {
-        // Catalog items go through the service catalog API
-        actions.push({ type: "comment", text: `Submit catalog item` });
-        actions.push({ type: "create", table: "__catalog_order__", data, varName });
+        // Extract catalog item name from step text (e.g. "submit the Hardware Checkout catalog item")
+        const catNameMatch = text.match(/submit the (.+?) catalog item/i);
+        const catalogItemName = catNameMatch ? catNameMatch[1] : feature.name;
+        actions.push({ type: "comment", text: `Submit catalog item: ${catalogItemName}` });
+        actions.push({ type: "create", table: "__catalog_order__", data, varName, catalogItemName });
       } else {
         actions.push({ type: "create", table: tableHint, data, varName });
       }
@@ -225,7 +244,7 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
       const data: Record<string, string> = {};
       for (const row of step.dataTable) {
         const key = row.variable || row.field;
-        data[key] = row.value;
+        data[key] = mapToApiValue(key, row.value);
       }
       const varName = `updated${createCount > 1 ? createCount : ""}`;
       lastUpdateVar = varName;
@@ -342,9 +361,10 @@ function emitActions(actions: CodeAction[], indent: string): string {
       case "create": {
         if (action.table === "__catalog_order__") {
           // Service Catalog order via Cart API
+          const catName = action.catalogItemName || "Unknown";
           lines.push(`${indent}// Order catalog item via Service Catalog API`);
           lines.push(`${indent}// First, find the catalog item`);
-          lines.push(`${indent}const catItemRes = await request.get(\`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1\`);`);
+          lines.push(`${indent}const catItemRes = await request.get(\`/api/now/table/sc_cat_item?sysparm_query=name=${catName}^active=true&sysparm_fields=sys_id&sysparm_limit=1\`);`);
           lines.push(`${indent}const catItems = (await catItemRes.json()).result;`);
           lines.push(`${indent}expect(catItems.length).toBeGreaterThan(0);`);
           lines.push(`${indent}const catItemId = catItems[0].sys_id;`);
@@ -402,7 +422,9 @@ function emitActions(actions: CodeAction[], indent: string): string {
       }
 
       case "assert_field": {
-        lines.push(`${indent}expect(${action.varName}.${action.field}).toBe("${action.value}");`);
+        // Map ServiceNow display values to API values
+        const apiValue = mapToApiValue(action.field, action.value);
+        lines.push(`${indent}expect(${action.varName}.${action.field}).toBe("${apiValue}");`);
         break;
       }
 

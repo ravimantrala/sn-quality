@@ -18,7 +18,7 @@ test.describe("Hardware Checkout Device Type Validation", () => {
   });
 
   test("Each device type creates an auto-approved requested item (device_type=mac_laptop, device_label=Mac Laptop)", async ({ request }) => {
-    // Submit catalog item
+    // Submit catalog item: Hardware Checkout
     // Order catalog item via Service Catalog API
     // First, find the catalog item
     const catItemRes = await request.get(`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1`);
@@ -59,7 +59,7 @@ test.describe("Hardware Checkout Device Type Validation", () => {
   });
 
   test("Each device type creates an auto-approved requested item (device_type=windows_laptop, device_label=Windows Laptop)", async ({ request }) => {
-    // Submit catalog item
+    // Submit catalog item: Hardware Checkout
     // Order catalog item via Service Catalog API
     // First, find the catalog item
     const catItemRes = await request.get(`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1`);
@@ -100,7 +100,7 @@ test.describe("Hardware Checkout Device Type Validation", () => {
   });
 
   test("Each device type creates an auto-approved requested item (device_type=iphone, device_label=iPhone)", async ({ request }) => {
-    // Submit catalog item
+    // Submit catalog item: Hardware Checkout
     // Order catalog item via Service Catalog API
     // First, find the catalog item
     const catItemRes = await request.get(`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1`);
@@ -141,7 +141,7 @@ test.describe("Hardware Checkout Device Type Validation", () => {
   });
 
   test("Each device type creates an auto-approved requested item (device_type=android_phone, device_label=Android Phone)", async ({ request }) => {
-    // Submit catalog item
+    // Submit catalog item: Hardware Checkout
     // Order catalog item via Service Catalog API
     // First, find the catalog item
     const catItemRes = await request.get(`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1`);

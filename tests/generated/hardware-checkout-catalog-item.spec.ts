@@ -37,7 +37,7 @@ test.describe("Hardware Checkout Catalog Item", () => {
   });
 
   test("Device request is auto-approved", /* @Submission @AutoApproval @Smoke */ async ({ request }) => {
-    // Submit catalog item
+    // Submit catalog item: Hardware Checkout
     // Order catalog item via Service Catalog API
     // First, find the catalog item
     const catItemRes = await request.get(`/api/now/table/sc_cat_item?sysparm_query=name=Hardware Checkout^active=true&sysparm_fields=sys_id&sysparm_limit=1`);

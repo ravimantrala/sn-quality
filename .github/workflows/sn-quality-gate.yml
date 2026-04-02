@@ -118,7 +118,7 @@ jobs:
               core.setFailed(`Quality gate BLOCKED: ${failed} contract(s) failed`);
             }
 
-      - name: Upload test artifacts
+      - name: Upload test artifacts  # separate step — not part of github-script
         if: always()
         uses: actions/upload-artifact@v4
         with:
