@@ -19,9 +19,50 @@ Then tell Claude what you want to build:
 
 > "I want auto-priority assignment for incidents based on impact and urgency"
 
-Claude will run the full TDD workflow automatically.
+## What Happens Next
 
-## TDD Workflow
+```
+You: "Build me a hardware checkout catalog item"
+                    │
+        ┌───────────▼───────────┐
+        │  1. Claude asks a few │  ← Adaptive, not a fixed form
+        │     targeted questions│
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  2. You review and    │  ← Structured plan with behaviors,
+        │     approve the plan  │    decision matrix, assumptions
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  3. Claude generates  │  ← Gherkin contracts (plain English)
+        │     test contracts    │    + Playwright specs (runnable code)
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  4. Tests run → RED   │  ← Nothing deployed yet — tests
+        │     (all fail)        │    prove they test something real
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  5. Claude builds and │  ← Business rules, catalog items,
+        │     deploys the app   │    variables — any ServiceNow table
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  6. Tests run → GREEN │  ← App works as designed
+        │     (all pass)        │
+        └───────────┬───────────┘
+                    │
+        ┌───────────▼───────────┐
+        │  7. PR opened with    │  ← Tests travel with the code
+        │     CI quality gate   │    through the pipeline
+        └───────────────────────┘
+```
+
+You stay in the conversation the whole time. Claude handles discovery, planning, coding, testing, and deployment.
+
+## TDD Workflow (Detail)
 
 ```
 1. /sn-plan              → Adaptive planning from intent
