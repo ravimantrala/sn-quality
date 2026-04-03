@@ -16,13 +16,46 @@ These are always 1:1. Every `.feature` MUST have a `.build.md`. They come from t
 
 1. **Require an approved plan.** Do NOT generate contracts without a plan from `/sn-plan`. The plan's Behaviors become Gherkin scenarios. The plan's Decision Matrix becomes Scenario Outlines. The plan's Assumptions become background context.
 2. If instance metadata isn't already available, run `/sn-discover` first
-3. **Load Build Agent skills** for each artifact type in the plan (see Build Agent Skill Loading below)
-4. Generate the `.feature` file following the Gherkin Style Guide below
-5. Generate the paired `.build.md` file following the Build Spec Format below — using Build Agent skill knowledge to ensure artifact definitions match what the skills expect
-6. Write both files to the `contracts/` directory:
+3. **Load the ATF-Gherkin mapping** from `docs/atf-gherkin-mapping.md`. Match customer intent to existing ATF step configs first. Only create custom Gherkin sentences when no ATF step covers the intent.
+4. **Load Build Agent skills** for each artifact type in the plan (see Build Agent Skill Loading below)
+5. Generate the `.feature` file following the Gherkin Style Guide below — **preferring ATF-mapped Gherkin sentences**
+6. Generate the paired `.build.md` file following the Build Spec Format below — using Build Agent skill knowledge to ensure artifact definitions match what the skills expect
+7. Write both files to the `contracts/` directory:
    - `contracts/<name>.feature` — Gherkin test contract
    - `contracts/<name>.build.md` — Build spec for Build Agent
    - Use kebab-case for filenames (e.g. `incident-auto-priority.feature` + `incident-auto-priority.build.md`)
+
+## ATF Step Mapping (Priority One)
+
+Before writing any Gherkin, read `docs/atf-gherkin-mapping.md`. This file maps all 104 active ATF step configs to Gherkin sentence patterns.
+
+**Rule: ATF-mapped steps first, custom Gherkin second.**
+
+For each scenario in the plan:
+1. Identify what the scenario tests (record insert, field validation, catalog order, etc.)
+2. Find the matching ATF step(s) in the mapping
+3. Use the mapped Gherkin sentence pattern
+4. Only write custom Gherkin when no ATF step covers the intent
+
+**Why:** ATF-mapped Gherkin can be converted to both Playwright (off-platform) and Testing Library code (on-platform via ATF runner). Custom Gherkin only works with Playwright.
+
+Common mappings for quick reference:
+
+| Intent | ATF Step | Gherkin Pattern |
+|--------|----------|-----------------|
+| Create a record | Record Insert | `When I insert a record into "<table>" with:` |
+| Update a record | Record Update | `When I update the "<table>" record with:` |
+| Check field values | Record Validation | `Then the "<table>" record has:` |
+| Check record exists | Record Query | `Then a record in "<table>" exists where:` |
+| Open a form | Open a New Form | `When I open a new "<table>" form` |
+| Set form fields | Set Field Values | `When I set the form field values:` |
+| Submit form | Submit a Form | `When I submit the form` |
+| Check field state | Field State Validation | `Then the "<field>" field is <state>` |
+| Order catalog item | Order Catalog Item | `When I order the catalog item "<name>"` |
+| Set catalog variables | Set Variable Values | `When I set the variable values:` |
+| Impersonate user | Impersonate | `Given I am impersonating user "<name>"` |
+| Send REST request | Send REST Request | `When I send a "<method>" request to "<endpoint>"` |
+| Check response | Assert Status Code | `Then the response status code is "<code>"` |
 
 ## Build Agent Skill Loading
 
