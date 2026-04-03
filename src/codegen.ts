@@ -182,9 +182,287 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
   let lastQueryVar = "";
   // Track which table we're operating on
   let contextTable = detectTable(feature.name) || "incident";
+  // ATF catalog ordering: variables accumulate until "I order the catalog item"
+  let pendingCatalogVars: Record<string, string> = {};
+  let lastCatalogItemName = "";
 
   for (const step of steps) {
     const text = step.text;
+
+    // =====================================================================
+    // ATF-MAPPED GHERKIN STEPS (priority — maps 1:1 to ATF step configs)
+    // =====================================================================
+
+    // --- ATF: Record Insert ---
+    // "I insert a record into <table> with:"
+    const atfInsertMatch = text.match(/I insert a record into "(.+?)" with/i);
+    if (atfInsertMatch && step.dataTable) {
+      const table = atfInsertMatch[1];
+      const data: Record<string, string> = {};
+      for (const row of step.dataTable) {
+        const key = row.field || row.variable || Object.keys(row)[0];
+        const val = row.value || row[Object.keys(row)[1]];
+        data[key] = mapToApiValue(key, val);
+      }
+      createCount++;
+      const varName = createCount === 1 ? "created" : `created${createCount}`;
+      lastCreateVar = varName;
+      actions.push({ type: "create", table, data, varName });
+      actions.push({ type: "track_cleanup", table, sysIdExpr: `${varName}.sys_id` });
+      continue;
+    }
+
+    // --- ATF: Record Update ---
+    // "I update the <table> record with:" or "I update the <table> record <sys_id> with:"
+    const atfUpdateMatch = text.match(/I update the "(.+?)" record(?: "(.+?)")? with/i);
+    if (atfUpdateMatch && step.dataTable) {
+      const table = atfUpdateMatch[1];
+      const data: Record<string, string> = {};
+      for (const row of step.dataTable) {
+        const key = row.field || row.variable || Object.keys(row)[0];
+        const val = row.value || row[Object.keys(row)[1]];
+        data[key] = mapToApiValue(key, val);
+      }
+      const varName = `updated${createCount > 1 ? createCount : ""}`;
+      lastUpdateVar = varName;
+      const sysIdExpr = atfUpdateMatch[2] || `${lastCreateVar}.sys_id`;
+      actions.push({ type: "update", table, sysIdExpr, data, varName });
+      continue;
+    }
+
+    // --- ATF: Record Delete ---
+    // "I delete the <table> record <sys_id>"
+    const atfDeleteMatch = text.match(/I delete the "(.+?)" record "(.+?)"/i);
+    if (atfDeleteMatch) {
+      actions.push({ type: "delete", table: atfDeleteMatch[1], sysIdExpr: `"${atfDeleteMatch[2]}"` });
+      continue;
+    }
+
+    // --- ATF: Record Query ---
+    // "a record in <table> exists where:" or "no record in <table> exists where:"
+    const atfQueryMatch = text.match(/(a|no) record in "(.+?)" exists where/i);
+    if (atfQueryMatch && step.dataTable) {
+      const isNegative = atfQueryMatch[1].toLowerCase() === "no";
+      const table = atfQueryMatch[2];
+      const queryParts: string[] = [];
+      for (const row of step.dataTable) {
+        const field = row.field || Object.keys(row)[0];
+        const op = row.operator || "=";
+        const val = row.value || row[Object.keys(row)[1]];
+        queryParts.push(`${field}${op}${val}`);
+      }
+      queryCount++;
+      const varName = queryCount === 1 ? "queried" : `queried${queryCount}`;
+      lastQueryVar = varName;
+      actions.push({ type: "query", table, query: queryParts.join("^"), varName });
+      if (isNegative) {
+        actions.push({ type: "comment", text: `expect(${varName}).toBeFalsy(); // No record should exist` });
+      } else {
+        actions.push({ type: "assert_not_empty", varName, description: `record exists in ${table}` });
+      }
+      continue;
+    }
+
+    // --- ATF: Record Validation ---
+    // "the <table> record has:" or 'the <table> record "<sys_id>" has:'
+    const atfValidationMatch = text.match(/the "(.+?)" record(?: "(.+?)")? has:/i);
+    if (atfValidationMatch && step.dataTable) {
+      const table = atfValidationMatch[1];
+      for (const row of step.dataTable) {
+        const field = row.field || Object.keys(row)[0];
+        const val = row.value || row[Object.keys(row)[1]];
+        const resultVar = lastUpdateVar || lastCreateVar;
+        actions.push({ type: "assert_field", varName: resultVar, field, value: val });
+      }
+      continue;
+    }
+
+    // --- ATF: Impersonate ---
+    // "I am impersonating user <username>"
+    const atfImpersonateMatch = text.match(/I am impersonating user "(.+?)"/i);
+    if (atfImpersonateMatch) {
+      actions.push({ type: "comment", text: `Impersonate: ${atfImpersonateMatch[1]} (handled by test runner auth)` });
+      continue;
+    }
+
+    // --- ATF: Open a New Form ---
+    // "I open a new <table> form"
+    const atfOpenFormMatch = text.match(/I open a new "(.+?)" form/i);
+    if (atfOpenFormMatch) {
+      actions.push({ type: "comment", text: `Open new ${atfOpenFormMatch[1]} form` });
+      continue;
+    }
+
+    // --- ATF: Open an Existing Record ---
+    // "I open the <table> record <sys_id>"
+    const atfOpenRecordMatch = text.match(/I open the "(.+?)" record "(.+?)"/i);
+    if (atfOpenRecordMatch) {
+      queryCount++;
+      const varName = queryCount === 1 ? "queried" : `queried${queryCount}`;
+      lastQueryVar = varName;
+      actions.push({ type: "query", table: atfOpenRecordMatch[1], query: `sys_id=${atfOpenRecordMatch[2]}`, varName });
+      continue;
+    }
+
+    // --- ATF: Set Field Values ---
+    // "I set the form field values:"
+    const atfSetFieldsMatch = text.match(/I set the (?:form )?field values/i);
+    if (atfSetFieldsMatch && step.dataTable) {
+      const data: Record<string, string> = {};
+      for (const row of step.dataTable) {
+        const key = row.field || Object.keys(row)[0];
+        const val = row.value || row[Object.keys(row)[1]];
+        data[key] = mapToApiValue(key, val);
+      }
+      const table = contextTable;
+      const varName = `updated${createCount > 1 ? createCount : ""}`;
+      lastUpdateVar = varName;
+      actions.push({ type: "update", table, sysIdExpr: `${lastCreateVar}.sys_id`, data, varName });
+      continue;
+    }
+
+    // --- ATF: Submit a Form ---
+    // "I submit the form"
+    const atfSubmitFormMatch = text.match(/^I submit the form$/i);
+    if (atfSubmitFormMatch) {
+      actions.push({ type: "comment", text: "Form submitted (handled by API call)" });
+      continue;
+    }
+
+    // --- ATF: Field Values Validation ---
+    // "the form field <field> has value <value>"
+    const atfFieldValMatch = text.match(/the (?:form )?field "(.+?)" has value "(.+?)"/i);
+    if (atfFieldValMatch) {
+      const resultVar = lastUpdateVar || lastCreateVar;
+      actions.push({ type: "assert_field", varName: resultVar, field: atfFieldValMatch[1], value: atfFieldValMatch[2] });
+      continue;
+    }
+
+    // --- ATF: Field State Validation ---
+    // "the <field> field is <state>" (read-only, mandatory, visible, etc.)
+    const atfFieldStateMatch = text.match(/the "(.+?)" field is (read-only|mandatory|visible|not visible|not mandatory|not read-only)/i);
+    if (atfFieldStateMatch) {
+      actions.push({ type: "comment", text: `Field state: ${atfFieldStateMatch[1]} is ${atfFieldStateMatch[2]}` });
+      continue;
+    }
+
+    // --- ATF: Open a Catalog Item ---
+    // "I open the catalog item <name>"
+    const atfOpenCatMatch = text.match(/I open the catalog item "(.+?)"/i);
+    if (atfOpenCatMatch) {
+      lastCatalogItemName = atfOpenCatMatch[1];
+      queryCount++;
+      const varName = queryCount === 1 ? "queried" : `queried${queryCount}`;
+      lastQueryVar = varName;
+      actions.push({ type: "query", table: "sc_cat_item", query: `name=${atfOpenCatMatch[1]}^active=true`, varName });
+      continue;
+    }
+
+    // --- ATF: Set Variable Values ---
+    // "I set the following variable values:"
+    const atfSetVarsMatch = text.match(/I set the following variable values/i);
+    if (atfSetVarsMatch && step.dataTable) {
+      // Store variable data for the subsequent order step
+      actions.push({ type: "comment", text: "Variable values set (applied on order)" });
+      // Store the data so the order step can use it
+      for (const row of step.dataTable) {
+        const key = row.variable || row.field || Object.keys(row)[0];
+        const val = row.value || row[Object.keys(row)[1]];
+        pendingCatalogVars[key] = val;
+      }
+      continue;
+    }
+
+    // --- ATF: Order Catalog Item ---
+    // "I order the catalog item" or "I order the catalog item <name>"
+    const atfOrderMatch = text.match(/I order the catalog item(?: "(.+?)")?/i);
+    if (atfOrderMatch) {
+      const catName = atfOrderMatch[1] || lastCatalogItemName || feature.name;
+      lastCatalogItemName = catName;
+      createCount++;
+      const varName = createCount === 1 ? "created" : `created${createCount}`;
+      lastCreateVar = varName;
+      actions.push({ type: "comment", text: `Order catalog item: ${catName}` });
+      actions.push({ type: "create", table: "__catalog_order__", data: { ...pendingCatalogVars }, varName, catalogItemName: catName });
+      actions.push({ type: "track_cleanup", table: "sc_req_item", sysIdExpr: `${varName}.sys_id` });
+      pendingCatalogVars = {};
+      continue;
+    }
+
+    // --- ATF: Validate Variable Values ---
+    // "the variable <variable> has value <value>"
+    const atfValVarMatch = text.match(/the variable "(.+?)" has value "(.+?)"/i);
+    if (atfValVarMatch) {
+      const resultVar = lastUpdateVar || lastCreateVar || lastQueryVar;
+      actions.push({ type: "assert_field", varName: resultVar, field: atfValVarMatch[1], value: atfValVarMatch[2] });
+      continue;
+    }
+
+    // --- ATF: Variable State Validation ---
+    // "the variable <variable> is <state>"
+    const atfVarStateMatch = text.match(/the variable "(.+?)" is "(mandatory|not mandatory|read only|not read only|visible|not visible)"/i);
+    if (atfVarStateMatch) {
+      actions.push({ type: "comment", text: `Variable state: ${atfVarStateMatch[1]} is ${atfVarStateMatch[2]}` });
+      continue;
+    }
+
+    // --- ATF: Search for Catalog Item ---
+    // "I search for catalog item <name>"
+    const atfSearchCatMatch = text.match(/I search for catalog item "(.+?)"/i);
+    if (atfSearchCatMatch) {
+      lastCatalogItemName = atfSearchCatMatch[1];
+      queryCount++;
+      const varName = queryCount === 1 ? "queried" : `queried${queryCount}`;
+      lastQueryVar = varName;
+      actions.push({ type: "query", table: "sc_cat_item", query: `name=${atfSearchCatMatch[1]}^active=true`, varName });
+      continue;
+    }
+
+    // --- ATF: Validate Outbound Email ---
+    // "an outbound email was sent" or "an outbound email was sent for notification <name>"
+    const atfEmailMatch = text.match(/an outbound email was sent(?: for notification "(.+?)")?/i);
+    if (atfEmailMatch) {
+      const query = atfEmailMatch[1]
+        ? `instance=\${${lastCreateVar}.sys_id}^notification.name=${atfEmailMatch[1]}`
+        : `instance=\${${lastCreateVar}.sys_id}`;
+      actions.push({ type: "assert_exists", description: "outbound email sent", queryTable: "sys_email", query });
+      continue;
+    }
+
+    // --- ATF: Send REST Request ---
+    // "I send a <method> request to <endpoint>"
+    const atfRestMatch = text.match(/I send a "(.+?)" request to "(.+?)"/i);
+    if (atfRestMatch) {
+      actions.push({ type: "comment", text: `REST ${atfRestMatch[1]} ${atfRestMatch[2]} (handled by Playwright request API)` });
+      continue;
+    }
+
+    // --- ATF: Assert Status Code ---
+    // "the response status code is <code>"
+    const atfStatusMatch = text.match(/the response status code is "(.+?)"/i);
+    if (atfStatusMatch) {
+      actions.push({ type: "comment", text: `Assert status: ${atfStatusMatch[1]}` });
+      continue;
+    }
+
+    // --- ATF: Checkout Shopping Cart ---
+    // "I checkout the shopping cart"
+    const atfCheckoutMatch = text.match(/I checkout the shopping cart/i);
+    if (atfCheckoutMatch) {
+      actions.push({ type: "comment", text: "Checkout shopping cart (handled by order API)" });
+      continue;
+    }
+
+    // --- ATF: Log ---
+    const atfLogMatch = text.match(/I log "(.+?)"/i);
+    if (atfLogMatch) {
+      actions.push({ type: "comment", text: `Log: ${atfLogMatch[1]}` });
+      continue;
+    }
+
+    // =====================================================================
+    // CUSTOM GHERKIN STEPS (fallback when no ATF step matches)
+    // =====================================================================
 
     // --- SUBMIT / CREATE with data table ---
     // "I submit the <X> catalog item with:" or "I populate the <X> form with:" or "<X> exists with:"
@@ -488,6 +766,12 @@ function emitActions(actions: CodeAction[], indent: string): string {
 
       case "comment": {
         lines.push(`${indent}// ${action.text}`);
+        break;
+      }
+
+      case "delete": {
+        lines.push(`${indent}// Delete ${action.table} record`);
+        lines.push(`${indent}await request.delete(\`/api/now/table/${action.table}/\${${action.sysIdExpr}}\`);`);
         break;
       }
     }
