@@ -616,7 +616,8 @@ function interpretSteps(steps: Step[], feature: Feature): CodeAction[] {
 
     // --- ASSERT: generic "is created" ---
     if (text.match(/is created/i)) {
-      actions.push({ type: "comment", text: "Record creation verified by API response" });
+      const resultVar = lastUpdateVar || lastCreateVar;
+      actions.push({ type: "assert_not_empty", varName: resultVar, description: "record was created" });
       continue;
     }
 
@@ -637,7 +638,9 @@ function emitActions(actions: CodeAction[], indent: string): string {
   let lastTable = "incident";
 
   for (const action of actions) {
-    if ("table" in action && action.table && action.table !== "__catalog_order__") lastTable = action.table;
+    if ("table" in action && action.table) {
+      lastTable = action.table === "__catalog_order__" ? "sc_req_item" : action.table;
+    }
     switch (action.type) {
       case "create": {
         if (action.table === "__catalog_order__") {

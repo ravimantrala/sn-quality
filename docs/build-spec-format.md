@@ -117,13 +117,12 @@ table: incident
   | Field | Value |
   |-------|-------|
   | name | Auto Priority from Impact Urgency |
-  | collection | incident |
+  | table | incident |
   | when | before |
+  | action | insert, update |
   | order | 50 |
   | active | true |
-  | action_insert | true |
-  | action_update | true |
-  | filter_condition | impact CHANGES OR urgency CHANGES |
+  | filterCondition | impactCHANGES^ORurgencyCHANGES |
 
 - **Logic (priority matrix):**
   | Impact | Urgency | → Priority |

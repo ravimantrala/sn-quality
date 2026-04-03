@@ -10,6 +10,6 @@ export function calculatePriority(current: any) {
     '3_2': 4,
     '3_3': 5,
   };
-  const key = current.impact + '_' + current.urgency;
-  current.priority = matrix[key] || 5;
+  const key = current.getValue('impact') + '_' + current.getValue('urgency');
+  current.setValue('priority', matrix[key] || 5);
 }
