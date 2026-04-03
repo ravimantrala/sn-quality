@@ -1,8 +1,8 @@
 # sn-quality — AI-Native Dev-Test for ServiceNow
 
-sn-quality is an AI-native TDD experience for building ServiceNow apps. Describe what you want, Claude discovers your instance, generates Gherkin contracts and build specs using Build Agent skills, builds the app with Now SDK/Fluent, tests it against the live instance, and opens a PR through the CI quality gate with tests packaged alongside app code.
+sn-quality is an AI-native TDD experience for building ServiceNow apps. Describe what you want, Claude discovers your instance, generates Gherkin contracts using ATF step vocabulary and Build Agent skills, builds the app with Now SDK/Fluent, tests it against the live instance, and opens a PR through the CI quality gate with tests packaged alongside app code.
 
-**Gherkin contracts → Playwright .spec.ts → `npm test` → results.json**
+**ATF-mapped Gherkin → Playwright .spec.ts → `npm test` → results.json**
 
 The entire plan-test-build-deploy loop stays in the conversation. Claude Code does everything, guided by Build Agent skills for ServiceNow-specific knowledge.
 
@@ -26,12 +26,12 @@ npx now-sdk auth --add https://your-instance.service-now.com --type basic
 
 Then tell Claude what you want to build:
 
-> "I want auto-priority assignment for incidents based on impact and urgency"
+> "I want a coffee ordering app for the office Starbucks"
 
 ## What Happens Next
 
 ```
-You: "Build me a hardware checkout catalog item"
+You: "Build me a coffee ordering app"
                     │
         ┌───────────▼───────────┐
         │  1. Claude asks a few │  ← Adaptive, not a fixed form
@@ -44,9 +44,10 @@ You: "Build me a hardware checkout catalog item"
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
-        │  3. Claude generates  │  ← Gherkin contracts + build specs
-        │     contracts using   │    guided by Build Agent skills
-        │     Build Agent skills│    + Playwright specs (runnable code)
+        │  3. Claude generates  │  ← ATF-mapped Gherkin contracts
+        │     contracts using   │    + build specs + Playwright specs
+        │     ATF steps + Build │
+        │     Agent skills      │
         └───────────┬───────────┘
                     │
         ┌───────────▼───────────┐
@@ -83,18 +84,51 @@ You stay in the conversation the whole time. Claude Code handles everything — 
 ```
 1.  /sn-plan              → Adaptive planning from intent
 2.  Developer reviews      → Approves the plan
-3.  /sn-generate-contracts → Gherkin .feature + .build.md from approved plan
-                              (loads Build Agent skills for accurate specs)
+3.  /sn-generate-contracts → ATF-mapped Gherkin .feature + .build.md
+                              (ATF steps first, custom Gherkin as fallback)
 4.  Developer reviews      → Approves contracts
 5.  npm run codegen        → Generate Playwright .spec.ts files
 6.  npm test               → RED (nothing deployed yet — tests should fail)
 7.  /sn-build              → Fluent code → npm run build → npm run deploy
-                              (Now SDK primary, REST API fallback)
 8.  npm test               → GREEN (tests pass)
 9.  Repeat 7-8             → Until all contracts pass
 10. /sn-summary            → Quality report
 11. git push + PR          → CI quality gate validates
 ```
+
+## ATF Step Mapping
+
+Contracts use Gherkin sentences that map 1:1 to ServiceNow ATF step configs (`sys_atf_step_config`). This means the same contract can target Playwright (off-platform) today and Testing Library (on-platform) in the future.
+
+104 ATF steps are mapped across 15 categories. See `docs/atf-gherkin-mapping.md` for the full reference.
+
+Common patterns:
+
+```gherkin
+# Server steps (Record operations)
+When I insert a record into "incident" with:
+  | field             | value        |
+  | short_description | Server down  |
+  | impact            | 1 - High     |
+Then the "incident" record has:
+  | field    | operator | value |
+  | priority | =        | 1     |
+
+# Catalog steps (Service Catalog ordering)
+When I open the catalog item "Coffee Order"
+And I set the following variable values:
+  | variable    | value |
+  | coffee_type | latte |
+And I order the catalog item
+Then a requested item (RITM) is created
+
+# Query steps (Record existence)
+Then a record in "task_sla" exists where:
+  | field | operator | value             |
+  | task  | =        | ${created.sys_id} |
+```
+
+When no ATF step covers the intent, custom Gherkin is generated as fallback.
 
 ## Build Agent Skills
 
@@ -117,8 +151,6 @@ app/dist/                     → Compiled XML update set
 Instance                      → Artifacts installed via Now SDK
 ```
 
-For artifacts the SDK doesn't support, `/sn-build` falls back to REST API deploy via `/sn-deploy`.
-
 ## Skills
 
 | Skill | Purpose |
@@ -127,11 +159,11 @@ For artifacts the SDK doesn't support, `/sn-build` falls back to REST API deploy
 | `/sn-query` | Query any ServiceNow table |
 | `/sn-check-exists` | Verify an artifact exists on the instance |
 | `/sn-discover` | Scan instance metadata (business rules, UI policies, ACLs, notifications, SLAs) |
-| `/sn-generate-contracts` | Write paired .feature + .build.md files using Build Agent skills |
+| `/sn-generate-contracts` | Write paired .feature + .build.md files using ATF steps + Build Agent skills |
 | `/sn-review-contracts` | Read and display contracts for review |
 | `/sn-edit-contract` | Modify an existing contract |
-| `/sn-build` | Generate Fluent code from .build.md, build with Now SDK, deploy to instance |
-| `/sn-deploy` | Push artifacts via REST API (fallback for artifacts without Fluent support) |
+| `/sn-build` | Generate Fluent code from .build.md, build and deploy with Now SDK |
+| `/sn-deploy` | Push records via REST API (for test data and instance queries) |
 | `/sn-execute` | Parse contracts into a Playwright execution plan |
 | `/sn-diagnose` | Analyze a test failure using instance metadata |
 | `/sn-cleanup` | Delete test records (cascade-aware) |
@@ -140,10 +172,10 @@ For artifacts the SDK doesn't support, `/sn-build` falls back to REST API deploy
 
 ## How Tests Work
 
-Contracts are written in Gherkin (plain English), then code-generated into Playwright Test specs:
+Contracts are written in ATF-mapped Gherkin (plain English matching ATF step configs), then code-generated into Playwright Test specs:
 
 ```
-contracts/*.feature          → Source of truth (Gherkin)
+contracts/*.feature          → Source of truth (ATF-mapped Gherkin)
     ↓ npm run codegen
 tests/generated/*.spec.ts   → Runnable Playwright specs
     ↓ npm test
@@ -151,6 +183,26 @@ test-results/results.json   → Pass/fail results for CI
 ```
 
 Tests run autonomously via `npm test` — no Claude Code in the loop. Anyone on the team can run them.
+
+## Example: Coffee Order Contract
+
+```gherkin
+@Catalog @CoffeeOrder
+Feature: Office Coffee Order
+  As an office employee
+  I need to order coffee through the service catalog
+
+  Scenario: Employee orders a latte for delivery
+    When I open the catalog item "Coffee Order"
+    And I set the following variable values:
+      | variable        | value    |
+      | coffee_type     | latte    |
+      | delivery_method | delivery |
+    And I order the catalog item
+    Then a requested item (RITM) is created
+    And the RITM approval state is "approved"
+    And a fulfillment task exists for the RITM
+```
 
 ## CLI Runner
 
@@ -177,27 +229,27 @@ npx tsx src/run.ts <command> '<json-args>'
 app/                        — Now SDK project (Fluent code generation)
   src/fluent/               — Generated .now.ts artifact definitions
     business-rules/         — Business rule artifacts
-    client-scripts/         — Client script artifacts
-    ...                     — Other artifact types as needed
+    catalog/                — Catalog item artifacts
   src/server/               — Server-side script modules
   now.config.json           — App scope (x_snc_quality) and metadata
   package.json              — Now SDK dependencies
 src/
   sn-client.ts              — ServiceNow REST API client
-  codegen.ts                — Gherkin → Playwright .spec.ts codegen
+  codegen.ts                — ATF-mapped Gherkin → Playwright codegen
   results-writer.ts         — Test results + record tracking persistence
   run.ts                    — CLI runner for all commands
 .claude/skills/             — Claude Code skill definitions
 contracts/
-  *.feature                 — Gherkin test contracts (what to test)
+  *.feature                 — ATF-mapped Gherkin test contracts
   *.build.md                — Build specs (what to create, for /sn-build)
+docs/
+  atf-gherkin-mapping.md    — 104 ATF steps → Gherkin sentence mapping
+  build-spec-format.md      — Build spec format documentation
 tests/generated/            — Playwright specs (generated by codegen)
 test-results/
   results.json              — Test results (Playwright format, read by CI)
   records.json              — Tracked sys_ids for cleanup
   deploy-snapshot.json      — Pre-deploy state for rollback
-docs/
-  build-spec-format.md      — Build spec format documentation
 playwright.config.ts        — Playwright Test configuration
 .github/workflows/          — CI/CD quality gate
 ```

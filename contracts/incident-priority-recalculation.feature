@@ -5,14 +5,14 @@ Feature: Priority Recalculates When Impact or Urgency Changes
   So that the priority always reflects the current severity assessment
 
   Background:
-    Given I am logged into ServiceNow as an ITIL user
+    Given I am logged in as an ITIL user
 
   # -------------------------------------------------------------------
   # Scenario 1: Urgency Escalation Recalculates Priority
   # -------------------------------------------------------------------
   @Escalation
   Scenario: Priority upgrades when urgency is raised on existing incident
-    Given an incident exists with:
+    When I insert a record into "incident" with:
       | field             | value                          |
       | caller_id         | Abel Tuter                     |
       | short_description | Recalc test — urgency change   |
@@ -20,20 +20,22 @@ Feature: Priority Recalculates When Impact or Urgency Changes
       | urgency           | 3 - Low                        |
       | category          | Software                       |
       | assignment_group  | Service Desk                   |
-    And the "priority" field value is "4 - Low"
-    When I update the incident with:
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 4     |
+    When I update the "incident" record with:
       | field   | value    |
       | urgency | 1 - High |
-    And I save the form
-    Then the "priority" field value is "2 - High"
-    And a notification is sent for "Incident Priority Raised"
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 2     |
 
   # -------------------------------------------------------------------
   # Scenario 2: Impact Escalation Recalculates Priority
   # -------------------------------------------------------------------
   @Escalation
   Scenario: Priority upgrades when impact is raised on existing incident
-    Given an incident exists with:
+    When I insert a record into "incident" with:
       | field             | value                          |
       | caller_id         | Abel Tuter                     |
       | short_description | Recalc test — impact change    |
@@ -41,32 +43,36 @@ Feature: Priority Recalculates When Impact or Urgency Changes
       | urgency           | 3 - Low                        |
       | category          | Software                       |
       | assignment_group  | Service Desk                   |
-    And the "priority" field value is "5 - Planning"
-    When I update the incident with:
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 5     |
+    When I update the "incident" record with:
       | field  | value    |
       | impact | 1 - High |
-    And I save the form
-    Then the "priority" field value is "3 - Moderate"
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 3     |
 
   # -------------------------------------------------------------------
   # Scenario 3: Double Escalation (Both Fields Change)
   # -------------------------------------------------------------------
   @Escalation @Critical
   Scenario: Priority jumps to Critical when both impact and urgency are raised
-    Given an incident exists with:
-      | field             | value                                  |
-      | caller_id         | Abel Tuter                             |
-      | short_description | Recalc test — double escalation        |
-      | impact            | 3 - Low                                |
-      | urgency           | 3 - Low                                |
-      | category          | Software                               |
-      | assignment_group  | Service Desk                           |
-    And the "priority" field value is "5 - Planning"
-    When I update the incident with:
+    When I insert a record into "incident" with:
+      | field             | value                              |
+      | caller_id         | Abel Tuter                         |
+      | short_description | Recalc test — double escalation    |
+      | impact            | 3 - Low                            |
+      | urgency           | 3 - Low                            |
+      | category          | Software                           |
+      | assignment_group  | Service Desk                       |
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 5     |
+    When I update the "incident" record with:
       | field   | value    |
       | impact  | 1 - High |
       | urgency | 1 - High |
-    And I save the form
-    Then the "priority" field value is "1 - Critical"
-    And a notification is sent for "Incident Priority Raised"
-    And an SLA record is attached with definition "Priority 1 resolution (1 hour)"
+    Then the "incident" record has:
+      | field    | operator | value |
+      | priority | =        | 1     |

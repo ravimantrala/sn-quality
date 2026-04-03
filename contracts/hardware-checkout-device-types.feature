@@ -5,21 +5,22 @@ Feature: Hardware Checkout Device Type Validation
   So that fulfillment can proceed for any hardware type
 
   Background:
-    Given I am logged into ServiceNow as an ITIL user
+    Given I am logged in as an ITIL user
 
   # -------------------------------------------------------------------
   # All 4 Device Types — Parameterized
   # -------------------------------------------------------------------
   @Matrix @Smoke
   Scenario Outline: Each device type creates an auto-approved requested item
-    When I submit the Hardware Checkout catalog item with:
+    When I open the catalog item "Hardware Checkout"
+    And I set the following variable values:
       | variable      | value                            |
       | device_type   | <device_type>                    |
       | justification | Testing <device_label> checkout  |
+    And I order the catalog item
     Then a requested item (RITM) is created
     And the RITM approval state is "approved"
     And a fulfillment task exists for the RITM
-    And the RITM number is captured for cleanup
 
     Examples:
       | device_type    | device_label   |

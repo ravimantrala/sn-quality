@@ -15,7 +15,7 @@ export const coffeeOrder = CatalogItem({
 
   availability: 'both',
   requestMethod: 'order',
-  fulfillmentAutomationLevel: 'fullyAutomated',
+  executionPlan: '523da512c611228900811a37c97c2014',
 
   variables: {
     coffee_type: SelectBoxVariable({
